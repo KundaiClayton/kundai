@@ -1,0 +1,37 @@
+---
+// NavBar.astro
+const navItems = [
+  { title: "About Me", url: "/about" },
+  { title: "Portfolio", url: "/portfolio" },
+  { title: "Blog", url: "/blog" },
+  { title: "Contact", url: "/contact" },
+];
+
+// Get current path
+const pathname = Astro.url.pathname;
+---
+
+<div class="flex gap-4  ">
+  <a href="/" class="py-4">
+    <div class="font-bold border-[0.1px] border-orange-400 cursor-pointer text-orange-400/95 w-12 rounded-md p-4">
+      
+    </div>
+  </a>
+  <nav class="px-4 w-full py-4 rounded-md border-[0.1px] border-slate-400 bg-background/90">
+    <div class="flex items-center justify-between px-4 space-x-4 align-middle sm:px-16">
+      {
+        navItems.map(({ title, url }) => (
+          <a
+            href={url}
+            class:list={[
+              'sm:text-2xl font-extralight text-sm hover:text-orange-400/95 transition-colors align-middle',
+              pathname === url ? 'text-orange-400/95' : 'text-gray-300'
+            ]}
+          >
+            {title}
+          </a>
+        ))
+      }
+    </div>
+  </nav>
+</div>

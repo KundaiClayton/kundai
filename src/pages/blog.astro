@@ -1,0 +1,41 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { getAllPublished } from '../lib/notion';
+
+const posts = await getAllPublished();
+---
+<Layout title="Blog">
+<div class="px-4 space-y-8 sm:space-x-14 sm:px-0">
+  <section class="flex justify-center text-center sm:gap-6 sm:px-48 sm:py-16">
+    <h1 class="font-mono text-xl leading-loose sm:text-3xl text-white/80">
+      Just started getting into writing. Check out some of my pieces
+      below. Nothing serious, just some random thoughts I have... enjoy.
+    </h1>
+  </section>
+
+  <main class="px-4 space-y-8 sm:space-y-0 sm:px-16">
+    {
+      posts ? (
+        posts.map((post) => (
+          <section
+            class="sm:px-24 sm:py-14 border-t-[0.1px] border-slate-400 hover:animate-pulse"
+          >
+            <a href={`/blog/${post.slug}`} class="flex flex-col gap-4">
+              <div>
+                <h2 class="text-lg sm:text-2xl text-white/80">{post.title}</h2>
+              </div>
+              <div class="text-xs font-bold sm:text-sm text-white/40">
+                {post.date}
+              </div>
+              <p class="text-sm font-thin text-gray-200 sm:text-base">
+                {post.description}
+              </p>
+            </a>
+          </section>
+        ))
+      ) : (
+        <h1>No posts</h1>
+      )
+    }
+  </main>
+</div></Layout>

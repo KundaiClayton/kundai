@@ -1,0 +1,27 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { getAllPublished, getSingleBlogPostBySlug } from '../../lib/notion';
+
+
+export async function getStaticPaths() {
+  const posts = await getAllPublished();
+  return posts.map((post) => ({
+    params: { slug: post.slug },
+  }));
+}
+
+const { slug } = Astro.params;
+const post = await getSingleBlogPostBySlug(slug);
+console.log(post);
+---
+<Layout title={post.metadata.title}>
+<div class="mt-8 pt-8">
+  <main class="py-6 px-4 sm:px-16">
+    <article class="prose prose-invert max-w-none">
+      <h1 class="text-4xl font-bold text-white/80 mb-4">{post.metadata.title}</h1>
+      <div class="text-sm text-white/40 mb-8">{post.metadata.date}</div>
+      <div class="markdown-content" set:html={post.markdown} />
+    </article>
+  </main>
+</div>
+</Layout>

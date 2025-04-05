@@ -54,46 +54,46 @@ export const getAllPublished = async () => {
   }
 };
 
-export const getSingleBlogPostBySlug = async (slug: string) => {
-  try {
-    console.log('Fetching post with slug:', slug);
-    const response = await notion.databases.query({
-      database_id: NOTION_DATABASE_ID,
-      filter: {
-        property: "Slug",
-        formula: {
-          string: {
-            equals: slug,
-          },
-        },
-      },
-    });
+// export const getSingleBlogPostBySlug = async (slug: string) => {
+//   try {
+//     console.log('Fetching post with slug:', slug);
+//     const response = await notion.databases.query({
+//       database_id: NOTION_DATABASE_ID,
+//       filter: {
+//         property: "Slug",
+//         formula: {
+//           string: {
+//             equals: slug,
+//           },
+//         },
+//       },
+//     });
 
-    console.log('Response for slug:', JSON.stringify(response, null, 2));
+//     console.log('Response for slug:', JSON.stringify(response, null, 2));
 
-    const page = response.results[0];
-    if (!page) {
-      throw new Error(`No post found with slug: ${slug}`);
-    }
+//     const page = response.results[0];
+//     if (!page) {
+//       throw new Error(`No post found with slug: ${slug}`);
+//     }
 
-    console.log('Found page with ID:', page.id);
-    const metadata = getPageMetaData(page);
-    console.log('Generated metadata:', metadata);
+//     console.log('Found page with ID:', page.id);
+//     const metadata = getPageMetaData(page);
+//     console.log('Generated metadata:', metadata);
     
-    console.log('Fetching markdown for page ID:', page.id);
-    const mdblocks = await n2m.pageToMarkdown(page.id);
-    const mdString = n2m.toMarkdownString(mdblocks);
-    console.log('Generated markdown string length:', mdString.length);
+//     console.log('Fetching markdown for page ID:', page.id);
+//     const mdblocks = await n2m.pageToMarkdown(page.id);
+//     const mdString = n2m.toMarkdownString(mdblocks);
+//     console.log('Generated markdown string length:', mdString.length);
 
-    return {
-      metadata,
-      markdown: mdString,
-    };
-  } catch (error) {
-    console.error('Error in getSingleBlogPostBySlug:', error);
-    throw error;
-  }
-};
+//     return {
+//       metadata,
+//       markdown: mdString,
+//     };
+//   } catch (error) {
+//     console.error('Error in getSingleBlogPostBySlug:', error);
+//     throw error;
+//   }
+// };
 
 const getPageMetaData = (post: any) => {
   try {
@@ -135,3 +135,42 @@ function formatDate(datestring?: string) {
   
   return `${month} ${day}, ${year}`;
 }
+
+// src/lib/notion.ts
+
+export const getSingleBlogPostBySlug = async (slug: string) => {
+    try {
+      const response = await notion.databases.query({
+        database_id: NOTION_DATABASE_ID,
+        filter: {
+          property: "Slug",
+          formula: {
+            string: {
+              equals: slug,
+            },
+          },
+        },
+      });
+  
+      const page = response.results[0];
+      if (!page) {
+        throw new Error(`No post found with slug: ${slug}`);
+      }
+  
+      const metadata = getPageMetaData(page);
+      const mdblocks = await n2m.pageToMarkdown(page.id);
+      const mdString = n2m.toMarkdownString(mdblocks);
+  
+      // Debug log
+      console.log('Markdown string:', mdString);
+      console.log('Markdown parent:', mdString.parent);
+  
+      return {
+        metadata,
+        markdown: mdString.parent, // Make sure we're using .parent
+      };
+    } catch (error) {
+      console.error('Error fetching single post:', error);
+      throw error;
+    }
+  };

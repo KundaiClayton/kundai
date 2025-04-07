@@ -1,0 +1,122 @@
+---
+import { Image } from 'astro:assets';
+import Layout from '../layouts/Layout.astro';
+
+const mediaContent = {
+  book: {
+    title: "Four Thousand Weeks: Time Management for Mortals",
+    author: "Oliver Burkeman",
+    coverImage: "https://picsum.photos/80/120",
+    type: "Now reading"
+  },
+  music: {
+    title: "Pastoral",
+    artist: "Ludwig van Beethoven / London Symphony Orchestra",
+    subtitle: "Symphony No. 6",
+    coverImage: "https://picsum.photos/80/80",
+    type: "Now playing"
+  },
+  show: {
+    title: "Severance",
+    platform: "Apple TV+",
+    subtitle: "Season 1",
+    coverImage: "https://picsum.photos/120/80",
+    type: "Now watching"
+  }
+};
+
+const lastUpdated = "June 15, 2023";
+---
+
+<Layout title="Now | Kundai Clayton">
+  <div class="space-y-10">
+    <section>
+      <h1 class="text-3xl font-bold mb-2">Now</h1>
+      <p class="text-gray-300">What I'm currently doing, reading, listening to, and watching.</p>
+    </section>
+
+    <section class="bg-[#1e242a] rounded-lg p-6">
+      <h2 class="text-xl font-bold mb-4">Currently</h2>
+      <div class="space-y-6 text-gray-300">
+        <p>
+          I'm currently working as a senior designer at a tech company, focusing on creating design systems and
+          component-level interfaces.
+        </p>
+        <p>
+          In my free time, I'm learning more about digital gardens and personal knowledge management systems. I'm also
+          experimenting with generative AI digital tools for art and WebGL.
+        </p>
+        <p>
+          This "now" page was inspired by the{" "}
+          <a href="https://nownownow.com" class="text-orange-500 hover:underline">
+            now page movement
+          </a>
+          . It's regularly updated to reflect what I'm focused on at this point in my life.
+        </p>
+        <p class="text-sm text-gray-400">Last updated: {lastUpdated}</p>
+      </div>
+    </section>
+
+    <section>
+      <h2 class="text-xl font-bold mb-4">Reading</h2>
+      <div class="flex items-start gap-4 bg-[#1e242a] rounded-lg p-4">
+        <div class="flex-shrink-0">
+          <Image
+            src={mediaContent.book.coverImage}
+            alt="Book cover"
+            width={80}
+            height={120}
+            class="rounded"
+          />
+        </div>
+        <div>
+          <div class="text-sm text-orange-500 mb-1">{mediaContent.book.type}</div>
+          <h3 class="font-bold mb-1">{mediaContent.book.title}</h3>
+          <p class="text-sm text-gray-400">{mediaContent.book.author}</p>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2 class="text-xl font-bold mb-4">Listening</h2>
+      <div class="flex items-start gap-4 bg-[#1e242a] rounded-lg p-4">
+        <div class="flex-shrink-0">
+          <Image
+            src={mediaContent.music.coverImage}
+            alt="Album cover"
+            width={80}
+            height={80}
+            class="rounded"
+          />
+        </div>
+        <div>
+          <div class="text-sm text-orange-500 mb-1">{mediaContent.music.type}</div>
+          <h3 class="font-bold mb-1">{mediaContent.music.title}</h3>
+          <p class="text-sm text-gray-400">{mediaContent.music.artist}</p>
+          <p class="text-xs text-gray-500">{mediaContent.music.subtitle}</p>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2 class="text-xl font-bold mb-4">Watching</h2>
+      <div class="flex items-start gap-4 bg-[#1e242a] rounded-lg p-4">
+        <div class="flex-shrink-0">
+          <Image
+            src={mediaContent.show.coverImage}
+            alt="Movie poster"
+            width={120}
+            height={80}
+            class="rounded"
+          />
+        </div>
+        <div>
+          <div class="text-sm text-orange-500 mb-1">{mediaContent.show.type}</div>
+          <h3 class="font-bold mb-1">{mediaContent.show.title}</h3>
+          <p class="text-sm text-gray-400">{mediaContent.show.platform}</p>
+          <p class="text-xs text-gray-500">{mediaContent.show.subtitle}</p>
+        </div>
+      </div>
+    </section>
+  </div>
+</Layout>

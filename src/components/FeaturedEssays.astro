@@ -1,0 +1,80 @@
+---
+import { Image } from 'astro:assets';
+import Tag from './Tag.astro';
+
+type Essay = {
+  id: string;
+  title: string;
+  description: string;
+  date: string;
+  image: string;
+  status: "complete" | "wip";
+  tags: string[];
+};
+
+// Data moved to front matter
+const essays: Essay[] = [
+  {
+    id: "design-systems",
+    title: "The Evolution of Design Systems",
+    description:
+      "Exploring how design systems have evolved from simple style guides to complex, living documentation that shapes product development.",
+    date: "May 15, 2023",
+    image: "https://picsum.photos/600/400",
+    status: "complete",
+    tags: ["Design", "Systems", "Documentation"],
+  },
+  {
+    id: "digital-minimalism",
+    title: "Digital Minimalism: Finding Focus in a Noisy World",
+    description:
+      "An exploration of how minimalist principles can be applied to our digital lives to reduce distraction and increase meaning.",
+    date: "April 22, 2023",
+    image: "https://picsum.photos/600/400?random=2",
+    status: "complete",
+    tags: ["Minimalism", "Digital", "Focus"],
+  },
+];
+---
+
+<section class="mb-16">
+  <div class="mb-6">
+    <h2 class="text-2xl md:text-3xl font-bold mb-2">Featured Essays</h2>
+    <p class="text-gray-400">Longer, more polished pieces on design, technology, and creativity.</p>
+    <div class="accent-underline"></div>
+  </div>
+  <div class="space-y-8">
+    {
+      essays.map((essay) => (
+        <article class="grid md:grid-cols-2 gap-6 bg-[#1e242a] rounded-lg overflow-hidden">
+          <div class="relative">
+            <div class="absolute top-4 left-4 z-10">
+              <Tag variant={essay.status === "complete" ? "orange" : "dark"}>
+                {essay.status === "complete" ? "Complete" : "WIP"}
+              </Tag>
+            </div>
+            <Image
+              src={essay.image || "/placeholder.svg"}
+              alt={essay.title}
+              width={600}
+              height={400}
+              class="h-full w-full object-cover"
+            />
+          </div>
+          <div class="p-6 flex flex-col">
+            <div class="mb-2 text-sm text-gray-400">{essay.date}</div>
+            <h3 class="text-xl font-bold mb-2">{essay.title}</h3>
+            <p class="text-gray-300 mb-6">{essay.description}</p>
+            <div class="mt-auto flex flex-wrap gap-2">
+              {essay.tags.map((tag) => (
+                <Tag  variant="dark">
+                  {tag}
+                </Tag>
+              ))}
+            </div>
+          </div>
+        </article>
+      ))
+    }
+  </div>
+</section>

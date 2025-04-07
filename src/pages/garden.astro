@@ -1,0 +1,245 @@
+---
+import { Image } from 'astro:assets';
+import Layout from '../layouts/Layout.astro';
+import Tag from '../components/Tag.astro';
+
+type Essay = {
+  id: string
+  title: string
+  description: string
+  date: string
+  image: string
+  status: "complete" | "wip"
+  tags: string[]
+}
+
+type Note = {
+  id: string
+  title: string
+  description: string
+  date: string
+  status: "complete" | "wip"
+  tags: string[]
+}
+
+const essays: Essay[] = [
+  {
+    id: "design-systems",
+    title: "The Evolution of Design Systems",
+    description:
+      "Exploring how design systems have evolved from simple style guides to complex, living documentation that shapes product development.",
+    date: "May 15, 2023",
+    image: "https://picsum.photos/500/300",
+    status: "complete",
+    tags: ["Design", "Systems", "Documentation"],
+  },
+  {
+    id: "ai-creative-work",
+    title: "The Future of AI in Creative Work",
+    description:
+      "How artificial intelligence is reshaping the landscape of creative work and what it means for human creativity.",
+    date: "April 3, 2023",
+    image: "https://picsum.photos/500/300?random=2",
+    status: "wip",
+    tags: ["AI", "Creativity", "Future"],
+  },
+  {
+    id: "digital-minimalism",
+    title: "Digital Minimalism: Finding Focus in a Noisy World",
+    description:
+      "An exploration of how minimalist principles can be applied to our digital lives to reduce distraction and increase meaning.",
+    date: "April 22, 2023",
+    image: "https://picsum.photos/500/300?random=3",
+    status: "complete",
+    tags: ["Minimalism", "Digital", "Focus"],
+  },
+  {
+    id: "web-typography",
+    title: "The Art of Web Typography",
+    description: "A deep dive into the principles of good typography on the web and how to implement them effectively.",
+    date: "March 15, 2023",
+    image: "https://picsum.photos/500/300?random=4",
+    status: "complete",
+    tags: ["Typography", "Web", "Design"],
+  },
+];
+
+const notes: Note[] = [
+  {
+    id: "zettelkasten",
+    title: "Zettelkasten Note-Taking Method",
+    description:
+      "Quick thoughts on implementing the Zettelkasten method for better knowledge management and idea connections.",
+    date: "May 10, 2023",
+    status: "complete",
+    tags: ["Productivity", "Notes"],
+  },
+  {
+    id: "typography-tips",
+    title: "Typography Tips for Developers",
+    description:
+      "A collection of practical typography tips that developers can easily implement to improve readability.",
+    date: "June 1, 2023",
+    status: "wip",
+    tags: ["Design", "Typography", "Development"],
+  },
+  {
+    id: "atomic-habits",
+    title: "Book Notes: Atomic Habits",
+    description: "Key takeaways and personal reflections from James Clear's Atomic Habits.",
+    date: "April 15, 2023",
+    status: "complete",
+    tags: ["Books", "Habits", "Self-Improvement"],
+  },
+  {
+    id: "react-performance",
+    title: "React Performance Optimization Techniques",
+    description: "A collection of techniques to optimize React applications for better performance.",
+    date: "May 5, 2023",
+    status: "complete",
+    tags: ["React", "Performance", "JavaScript"],
+  },
+  {
+    id: "color-theory",
+    title: "Color Theory Basics for UI Design",
+    description: "Understanding color theory fundamentals and how to apply them to user interface design.",
+    date: "April 28, 2023",
+    status: "wip",
+    tags: ["Design", "Color", "UI"],
+  },
+  {
+    id: "technical-writing",
+    title: "Writing Tips for Technical Content",
+    description: "How to write clear, concise, and engaging technical content for developers.",
+    date: "March 20, 2023",
+    status: "complete",
+    tags: ["Writing", "Technical", "Communication"],
+  },
+];
+
+const allTags = [
+  "All",
+  "Books",
+  "Color",
+  "Communication",
+  "Creativity",
+  "Design",
+  "Development",
+  "Digital",
+  "Documentation",
+  "Focus",
+  "Future",
+  "Habits",
+  "JavaScript",
+  "Minimalism",
+  "Notes",
+  "Performance",
+  "Productivity",
+  "React",
+  "Self-Improvement",
+  "Systems",
+  "Technical",
+  "Typography",
+  "UI",
+  "Web",
+  "Writing",
+];
+---
+
+<Layout title="Garden | Kundai Clayton">
+  <div class="space-y-10">
+    <section>
+      <h1 class="text-3xl font-bold mb-2">The Garden</h1>
+      <p class="text-gray-300">A collection of essays, notes, and thoughts that grow and evolve over time.</p>
+    </section>
+
+    <section>
+      <div class="flex border-b border-gray-800 mb-4">
+        <button class="px-4 py-2 text-white border-b-2 border-orange-500 font-medium">All</button>
+        <button class="px-4 py-2 text-gray-400 hover:text-white">Essays</button>
+        <button class="px-4 py-2 text-gray-400 hover:text-white">Notes</button>
+      </div>
+
+      <div class="flex flex-wrap gap-2 mb-4">
+        <button class="px-3 py-1 text-sm bg-gray-800 text-white rounded-md">All Statuses</button>
+        <button class="px-3 py-1 text-sm text-gray-400 hover:text-white rounded-md">Drafts</button>
+        <button class="px-3 py-1 text-sm text-gray-400 hover:text-white rounded-md">Work In Progress</button>
+        <button class="px-3 py-1 text-sm text-gray-400 hover:text-white rounded-md">Complete</button>
+      </div>
+
+      <div class="mb-6">
+        <h3 class="text-sm font-medium mb-2">Filter by Tag:</h3>
+        <div class="flex flex-wrap gap-2">
+          {allTags.map((tag) => (
+            <button
+              class={`px-2 py-1 text-xs rounded-md ${tag === "All" ? "bg-gray-700 text-white" : "bg-gray-800 text-gray-400 hover:text-white"}`}
+            >
+              {tag}
+            </button>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2 class="text-2xl font-bold mb-6">Essays</h2>
+      <div class="grid md:grid-cols-2 gap-6">
+        {essays.map((essay) => (
+          <article class="bg-[#1e242a] rounded-lg overflow-hidden">
+            <div class="relative">
+              <div class="absolute top-4 left-4 z-10">
+                <Tag variant={essay.status === "complete" ? "orange" : "dark"}>
+                  {essay.status === "complete" ? "Complete" : "WIP"}
+                </Tag>
+              </div>
+              <Image
+                src={essay.image}
+                alt={essay.title}
+                width={500}
+                height={300}
+                class="w-full h-48 object-cover"
+              />
+            </div>
+            <div class="p-5">
+              <div class="text-sm text-gray-400 mb-1">{essay.date}</div>
+              <h3 class="text-lg font-bold mb-2">{essay.title}</h3>
+              <p class="text-gray-300 text-sm mb-4">{essay.description}</p>
+              <div class="flex flex-wrap gap-2">
+                {essay.tags.map((tag) => (
+                  <Tag variant="dark">
+                    {tag}
+                  </Tag>
+                ))}
+              </div>
+            </div>
+          </article>
+        ))}
+      </div>
+    </section>
+
+    <section>
+      <h2 class="text-2xl font-bold mb-6">Notes</h2>
+      <div class="grid md:grid-cols-3 gap-6">
+        {notes.map((note) => (
+          <article class="bg-[#1e242a] rounded-lg p-5">
+            <div class="flex justify-between items-start mb-3">
+              <div class="text-sm text-gray-400">{note.date}</div>
+              <Tag variant={note.status === "complete" ? "orange" : "dark"}>
+                {note.status === "complete" ? "Complete" : "WIP"}
+              </Tag>
+            </div>
+            <h3 class="text-lg font-bold mb-2">{note.title}</h3>
+            <p class="text-gray-300 text-sm mb-4">{note.description}</p>
+            <div class="flex flex-wrap gap-2">
+              {note.tags.map((tag) => (
+                <Tag variant="dark">
+                  {tag}
+                </Tag>
+              ))}
+            </div>
+          </article>
+        ))}
+      </div>
+    </section>
+  </div>
+</Layout>

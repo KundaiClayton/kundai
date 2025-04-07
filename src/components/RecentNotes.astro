@@ -1,0 +1,80 @@
+---
+import Tag from './Tag.astro';
+
+type Note = {
+  id: string;
+  title: string;
+  description: string;
+  date: string;
+  status: "complete" | "wip";
+  tags: string[];
+};
+
+// Data moved to front matter
+const notes: Note[] = [
+  {
+    id: "typography-tips",
+    title: "Typography Tips for Developers",
+    description:
+      "A collection of practical typography tips that developers can easily implement to improve readability.",
+    date: "June 1, 2023",
+    status: "wip",
+    tags: ["Design", "Typography", "Development"],
+  },
+  {
+    id: "zettelkasten",
+    title: "Zettelkasten Note-Taking Method",
+    description:
+      "Quick thoughts on implementing the Zettelkasten method for better knowledge management and idea connections.",
+    date: "May 10, 2023",
+    status: "complete",
+    tags: ["Productivity", "Notes"],
+  },
+  {
+    id: "react-performance",
+    title: "React Performance Optimization Techniques",
+    description: "A collection of techniques to optimize React applications for better performance.",
+    date: "May 5, 2023",
+    status: "complete",
+    tags: ["React", "Performance", "JavaScript"],
+  },
+];
+---
+
+<section class="mb-16">
+  <div class="mb-6">
+    <h2 class="text-2xl md:text-3xl font-bold mb-2">Recent Notes</h2>
+    <p class="text-gray-400">Shorter thoughts, observations, and works in progress.</p>
+  </div>
+  <div class="grid md:grid-cols-3 gap-6">
+    {
+      notes.map((note) => (
+        <article class="bg-[#1e242a] rounded-lg p-6 flex flex-col h-full">
+          <div class="mb-2 flex justify-between items-center">
+            <div class="text-sm text-gray-400">{note.date}</div>
+            <Tag variant={note.status === "complete" ? "orange" : "dark"}>
+              {note.status === "complete" ? "Complete" : "WIP"}
+            </Tag>
+          </div>
+          <h3 class="text-lg font-bold mb-2">{note.title}</h3>
+          <p class="text-gray-300 text-sm mb-6">{note.description}</p>
+          <div class="mt-auto flex flex-wrap gap-2">
+            {note.tags.map((tag) => (
+              <Tag variant="dark">
+                {tag}
+              </Tag>
+            ))}
+          </div>
+        </article>
+      ))
+    }
+  </div>
+  <div class="mt-10 text-center">
+    <a
+      href="/garden"
+      class="inline-flex items-center px-4 py-2 border border-gray-700 rounded-md text-sm font-medium hover:bg-gray-800 transition-colors"
+    >
+      Explore the Garden →
+    </a>
+  </div>
+</section>

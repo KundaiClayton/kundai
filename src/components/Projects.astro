@@ -1,0 +1,154 @@
+---
+import { Image } from 'astro:assets';
+import Tag from './Tag.astro';
+
+// Define the Project type based on Notion data
+interface ExternalLink {
+  title: string;
+  url: string;
+}
+
+interface Project {
+  id: string;
+  title: string;
+  description: string;
+  date: string;
+  coverImage: string;
+  status: string;
+  tags: string[];
+  slug: string;
+  externalLinks: ExternalLink[];
+}
+
+// Accept projects as a prop
+interface Props {
+  projects: Project[];
+}
+
+const { projects } = Astro.props;
+
+// Fallback data in case no projects are provided
+const fallbackProjects: Project[] = [
+  {
+    id: "personal-website",
+    title: "Personal Website & Digital Garden",
+    description:
+      "A custom-built website using Astro and Tailwind CSS, utilizing Notion as a CMS for content management.",
+    date: "April 10, 2024",
+    coverImage: "/images/project-website.png",
+    status: "complete",
+    tags: ["Astro", "Tailwind CSS", "Notion API"],
+    slug: "personal-website",
+    externalLinks: [
+      {
+        title: "GitHub Repository",
+        url: "https://github.com/username/personal-website"
+      },
+      {
+        title: "Live Demo",
+        url: "https://yourdomain.com"
+      }
+    ]
+  },
+  {
+    id: "task-management-app",
+    title: "Task Management Application",
+    description:
+      "A React-based task management application with drag-and-drop functionality and local storage.",
+    date: "February 15, 2024",
+    coverImage: "/images/project-tasks.png",
+    status: "wip",
+    tags: ["React", "TypeScript", "CSS"],
+    slug: "task-management-app",
+    externalLinks: [
+      {
+        title: "GitHub Repository",
+        url: "https://github.com/username/task-app"
+      }
+    ]
+  }
+];
+
+// Use provided projects or fallback if none
+const displayProjects = projects?.length > 0 ? projects : fallbackProjects;
+---
+
+<section class="mb-16">
+  <div class="mb-6">
+    <h2 class="text-2xl md:text-3xl font-bold mb-2">Projects</h2>
+    <p class="text-gray-400">My recent software development and design projects.</p>
+    <div class="accent-underline"></div>
+  </div>
+  <div class="grid md:grid-cols-2 gap-8">
+    {
+      displayProjects.map((project) => (
+        <article class="bg-[#1e242a] rounded-lg overflow-hidden flex flex-col h-full">
+          <div class="relative">
+            <div class="absolute top-4 left-4 z-10">
+              <Tag variant={project.status === "complete" ? "orange" : "dark"}>
+                {project.status === "complete" ? "Complete" : "WIP"}
+              </Tag>
+            </div>
+            {project.coverImage ? (
+              <img
+                src={project.coverImage}
+                alt={project.title}
+                width={600}
+                height={400}
+                class="h-48 w-full object-cover"
+              />
+            ) : (
+              <div class="h-48 w-full bg-gray-800 flex items-center justify-center">
+                <span class="text-gray-500">No image available</span>
+              </div>
+            )}
+          </div>
+          <div class="p-6 flex flex-col flex-grow">
+            <div class="mb-2 text-sm text-gray-400">{project.date}</div>
+            <h3 class="text-xl font-bold mb-2">{project.title}</h3>
+            <p class="text-gray-300 mb-6">{project.description}</p>
+            
+            <div class="flex flex-wrap gap-2 mb-4">
+              {project.tags.map((tag) => (
+                <Tag variant="dark">
+                  {tag}
+                </Tag>
+              ))}
+            </div>
+            
+            <div class="mt-auto">
+              {project.externalLinks && project.externalLinks.length > 0 && (
+                <div class="flex flex-wrap gap-3">
+                  {project.externalLinks.map((link) => (
+                    <a 
+                      href={link.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="inline-flex items-center gap-1 px-3 py-1.5 bg-gray-800 hover:bg-gray-700 rounded-md text-sm font-medium transition-colors"
+                    >
+                      <span>{link.title}</span>
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                      </svg>
+                    </a>
+                  ))}
+                </div>
+              )}
+              
+              {project.slug && (
+                <div class="mt-4">
+                  <a 
+                    href={`/blog/${project.slug}`}
+                    class="text-accent-orange hover:text-accent-orange/80 font-medium"
+                  >
+                    Read more →
+                  </a>
+                </div>
+              )}
+            </div>
+          </div>
+        </article>
+      ))
+    }
+  </div>
+</section>

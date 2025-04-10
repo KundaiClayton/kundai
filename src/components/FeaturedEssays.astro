@@ -1,28 +1,55 @@
 ---
 import { Image } from 'astro:assets';
 import Tag from './Tag.astro';
+import { getFeaturedContent } from '../lib/notion';
 
-type Essay = {
+// Define the Essay type based on your Notion data structure
+interface Essay {
   id: string;
   title: string;
   description: string;
   date: string;
-  image: string;
-  status: "complete" | "wip";
+  coverImage: string;
+  status: string;
   tags: string[];
-};
+  slug: string;
+  externalLinks?: {
+    title: string;
+    url: string;
+  }[];
+}
 
-// Data moved to front matter
-const essays: Essay[] = [
+// Accept essays as a prop or fetch from Notion if not provided
+interface Props {
+  essays?: Essay[];
+}
+
+const { essays: propEssays } = Astro.props;
+
+// Fetch essays from Notion if not provided as props
+let essays: Essay[] = [];
+if (propEssays) {
+  essays = propEssays;
+} else {
+  try {
+    essays = await getFeaturedContent('Essay');
+  } catch (error) {
+    console.error('Error fetching featured essays:', error);
+  }
+}
+
+// Fallback data if no essays are available
+const fallbackEssays: Essay[] = [
   {
     id: "design-systems",
     title: "The Evolution of Design Systems",
     description:
       "Exploring how design systems have evolved from simple style guides to complex, living documentation that shapes product development.",
     date: "May 15, 2023",
-    image: "https://picsum.photos/600/400",
+    coverImage: "https://picsum.photos/600/400",
     status: "complete",
     tags: ["Design", "Systems", "Documentation"],
+    slug: "design-systems"
   },
   {
     id: "digital-minimalism",
@@ -30,11 +57,17 @@ const essays: Essay[] = [
     description:
       "An exploration of how minimalist principles can be applied to our digital lives to reduce distraction and increase meaning.",
     date: "April 22, 2023",
-    image: "https://picsum.photos/600/400?random=2",
+    coverImage: "https://picsum.photos/600/400?random=2",
     status: "complete",
     tags: ["Minimalism", "Digital", "Focus"],
+    slug: "digital-minimalism"
   },
 ];
+
+console.log('Essays:', essays);
+
+// Use real essays if available, otherwise fallback
+const displayEssays = essays.length > 0 ? essays : fallbackEssays;
 ---
 
 <section class="mb-16">
@@ -45,7 +78,7 @@ const essays: Essay[] = [
   </div>
   <div class="space-y-8">
     {
-      essays.map((essay) => (
+      displayEssays.map((essay) => (
         <article class="grid md:grid-cols-2 gap-6 bg-[#1e242a] rounded-lg overflow-hidden">
           <div class="relative">
             <div class="absolute top-4 left-4 z-10">
@@ -53,25 +86,37 @@ const essays: Essay[] = [
                 {essay.status === "complete" ? "Complete" : "WIP"}
               </Tag>
             </div>
-            <Image
-              src={essay.image || "/placeholder.svg"}
-              alt={essay.title}
-              width={600}
-              height={400}
-              class="h-full w-full object-cover"
-            />
+            {essay.coverImage ? (
+              <img
+                src={essay.coverImage}
+                alt={essay.title}
+                width={600}
+                height={400}
+                class="h-full w-full object-cover"
+              />
+            ) : (
+              <div class="h-full w-full bg-gray-800 flex items-center justify-center">
+                <span class="text-gray-500">No image available</span>
+              </div>
+            )}
           </div>
           <div class="p-6 flex flex-col">
             <div class="mb-2 text-sm text-gray-400">{essay.date}</div>
             <h3 class="text-xl font-bold mb-2">{essay.title}</h3>
             <p class="text-gray-300 mb-6">{essay.description}</p>
-            <div class="mt-auto flex flex-wrap gap-2">
+            <div class="mt-auto flex flex-wrap gap-2 mb-4">
               {essay.tags.map((tag) => (
-                <Tag  variant="dark">
+                <Tag variant="dark">
                   {tag}
                 </Tag>
               ))}
             </div>
+            <a 
+              href={`/blog/${essay.slug}`}
+              class="text-accent-orange hover:text-accent-orange/80 font-medium mt-auto inline-block"
+            >
+              Read more →
+            </a>
           </div>
         </article>
       ))

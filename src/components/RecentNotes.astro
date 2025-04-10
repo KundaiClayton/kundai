@@ -1,17 +1,41 @@
 ---
 import Tag from './Tag.astro';
+import { getRecentContent } from '../lib/notion';
 
-type Note = {
+interface Note {
   id: string;
   title: string;
   description: string;
   date: string;
-  status: "complete" | "wip";
+  status: string;
   tags: string[];
-};
+  slug: string;
+  coverImage: string | null;
+}
 
-// Data moved to front matter
-const notes: Note[] = [
+// Define props interface to allow passing notes from parent
+interface Props {
+  notes?: Note[];
+}
+
+const { notes: propNotes } = Astro.props;
+
+// Fetch notes from Notion if not provided as props
+let notes: Note[] = [];
+if (propNotes) {
+  notes = propNotes;
+} else {
+  try {
+    // Fetch the 3 most recent notes from Notion
+    notes = await getRecentContent('Note', 3);
+    console.log('Fetched recent notes:', notes);
+  } catch (error) {
+    console.error('Error fetching recent notes:', error);
+  }
+}
+
+// Fallback data if no notes are available from Notion
+const fallbackNotes: Note[] = [
   {
     id: "typography-tips",
     title: "Typography Tips for Developers",
@@ -20,6 +44,8 @@ const notes: Note[] = [
     date: "June 1, 2023",
     status: "wip",
     tags: ["Design", "Typography", "Development"],
+    slug: "typography-tips",
+    coverImage: null
   },
   {
     id: "zettelkasten",
@@ -29,6 +55,8 @@ const notes: Note[] = [
     date: "May 10, 2023",
     status: "complete",
     tags: ["Productivity", "Notes"],
+    slug: "zettelkasten",
+    coverImage: null
   },
   {
     id: "react-performance",
@@ -37,8 +65,13 @@ const notes: Note[] = [
     date: "May 5, 2023",
     status: "complete",
     tags: ["React", "Performance", "JavaScript"],
+    slug: "react-performance",
+    coverImage: null
   },
 ];
+
+// Use fetched notes if available, otherwise use fallback
+const displayNotes = notes.length > 0 ? notes : fallbackNotes;
 ---
 
 <section class="mb-16">
@@ -48,7 +81,7 @@ const notes: Note[] = [
   </div>
   <div class="grid md:grid-cols-3 gap-6">
     {
-      notes.map((note) => (
+      displayNotes.map((note) => (
         <article class="bg-[#1e242a] rounded-lg p-6 flex flex-col h-full">
           <div class="mb-2 flex justify-between items-center">
             <div class="text-sm text-gray-400">{note.date}</div>
@@ -58,13 +91,19 @@ const notes: Note[] = [
           </div>
           <h3 class="text-lg font-bold mb-2">{note.title}</h3>
           <p class="text-gray-300 text-sm mb-6">{note.description}</p>
-          <div class="mt-auto flex flex-wrap gap-2">
+          <div class="mt-auto flex flex-wrap gap-2 mb-4">
             {note.tags.map((tag) => (
               <Tag variant="dark">
                 {tag}
               </Tag>
             ))}
           </div>
+          <a 
+            href={`/blog/${note.slug}`}
+            class="text-accent-orange hover:text-accent-orange/80 font-medium mt-auto inline-block"
+          >
+            Read more →
+          </a>
         </article>
       ))
     }

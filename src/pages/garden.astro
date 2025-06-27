@@ -2,148 +2,89 @@
 import { Image } from 'astro:assets';
 import Layout from '../layouts/Layout.astro';
 import Tag from '../components/Tag.astro';
+import GardenIntro from '../components/GardenIntro.astro';
+import { getContentByType, getAllTags, getContentByTag } from '../lib/notion';
 
-type Essay = {
-  id: string
-  title: string
-  description: string
-  date: string
-  image: string
-  status: "complete" | "wip"
-  tags: string[]
+// Define type interfaces based on the metadata structure from Notion
+type ContentItem = {
+  id: string;
+  title: string;
+  description: string;
+  date: string;
+  slug: string;
+  coverImage?: string;
+  contentType: string;
+  featured: boolean;
+  status: string;
+  tags: string[];
+  externalLinks?: { title: string, url: string }[];
 }
 
-type Note = {
-  id: string
-  title: string
-  description: string
-  date: string
-  status: "complete" | "wip"
-  tags: string[]
+// Get the selected filters from URL search params
+const { searchParams } = Astro.url;
+const selectedType = searchParams.get('type') || 'all';
+const selectedStatus = searchParams.get('status') || 'all';
+const selectedTag = searchParams.get('tag') || 'all';
+
+// Fetch data based on filters
+let essays: ContentItem[] = [];
+let notes: ContentItem[] = [];
+let allContent: ContentItem[] = [];
+let filteredContent: ContentItem[] = [];
+let allTags: string[] = ['All'];
+
+try {
+  // Fetch all tags
+  const tagsList = await getAllTags();
+  allTags = ['All', ...tagsList];
+  
+  // Get all essays and notes
+  essays = await getContentByType('Essay');
+  notes = await getContentByType('Note');
+  allContent = [...essays, ...notes];
+  
+  // Apply filters
+  if (selectedType !== 'all' && selectedTag !== 'all' && selectedStatus !== 'all') {
+    // Filter by type, tag, and status
+    const typeContent = selectedType === 'essay' ? essays : selectedType === 'note' ? notes : allContent;
+    const tagContent = await getContentByTag(selectedTag);
+    filteredContent = typeContent.filter(item => 
+      tagContent.some(tc => tc.id === item.id) && 
+      (selectedStatus === 'all' || item.status.toLowerCase() === selectedStatus)
+    );
+  } else if (selectedType !== 'all' && selectedTag !== 'all') {
+    // Filter by type and tag
+    const typeContent = selectedType === 'essay' ? essays : selectedType === 'note' ? notes : allContent;
+    const tagContent = await getContentByTag(selectedTag);
+    filteredContent = typeContent.filter(item => tagContent.some(tc => tc.id === item.id));
+  } else if (selectedType !== 'all' && selectedStatus !== 'all') {
+    // Filter by type and status
+    const typeContent = selectedType === 'essay' ? essays : selectedType === 'note' ? notes : allContent;
+    filteredContent = typeContent.filter(item => item.status.toLowerCase() === selectedStatus);
+  } else if (selectedTag !== 'all' && selectedStatus !== 'all') {
+    // Filter by tag and status
+    const tagContent = await getContentByTag(selectedTag);
+    filteredContent = tagContent.filter(item => item.status.toLowerCase() === selectedStatus);
+  } else if (selectedType !== 'all') {
+    // Filter by type only
+    filteredContent = selectedType === 'essay' ? essays : selectedType === 'note' ? notes : allContent;
+  } else if (selectedTag !== 'all') {
+    // Filter by tag only
+    filteredContent = await getContentByTag(selectedTag);
+  } else if (selectedStatus !== 'all') {
+    // Filter by status only
+    filteredContent = allContent.filter(item => item.status.toLowerCase() === selectedStatus);
+  } else {
+    // No filters, show all
+    filteredContent = allContent;
+  }
+} catch (error) {
+  console.error("Error fetching content:", error);
 }
 
-const essays: Essay[] = [
-  {
-    id: "design-systems",
-    title: "The Evolution of Design Systems",
-    description:
-      "Exploring how design systems have evolved from simple style guides to complex, living documentation that shapes product development.",
-    date: "May 15, 2023",
-    image: "https://picsum.photos/500/300",
-    status: "complete",
-    tags: ["Design", "Systems", "Documentation"],
-  },
-  {
-    id: "ai-creative-work",
-    title: "The Future of AI in Creative Work",
-    description:
-      "How artificial intelligence is reshaping the landscape of creative work and what it means for human creativity.",
-    date: "April 3, 2023",
-    image: "https://picsum.photos/500/300?random=2",
-    status: "wip",
-    tags: ["AI", "Creativity", "Future"],
-  },
-  {
-    id: "digital-minimalism",
-    title: "Digital Minimalism: Finding Focus in a Noisy World",
-    description:
-      "An exploration of how minimalist principles can be applied to our digital lives to reduce distraction and increase meaning.",
-    date: "April 22, 2023",
-    image: "https://picsum.photos/500/300?random=3",
-    status: "complete",
-    tags: ["Minimalism", "Digital", "Focus"],
-  },
-  {
-    id: "web-typography",
-    title: "The Art of Web Typography",
-    description: "A deep dive into the principles of good typography on the web and how to implement them effectively.",
-    date: "March 15, 2023",
-    image: "https://picsum.photos/500/300?random=4",
-    status: "complete",
-    tags: ["Typography", "Web", "Design"],
-  },
-];
-
-const notes: Note[] = [
-  {
-    id: "zettelkasten",
-    title: "Zettelkasten Note-Taking Method",
-    description:
-      "Quick thoughts on implementing the Zettelkasten method for better knowledge management and idea connections.",
-    date: "May 10, 2023",
-    status: "complete",
-    tags: ["Productivity", "Notes"],
-  },
-  {
-    id: "typography-tips",
-    title: "Typography Tips for Developers",
-    description:
-      "A collection of practical typography tips that developers can easily implement to improve readability.",
-    date: "June 1, 2023",
-    status: "wip",
-    tags: ["Design", "Typography", "Development"],
-  },
-  {
-    id: "atomic-habits",
-    title: "Book Notes: Atomic Habits",
-    description: "Key takeaways and personal reflections from James Clear's Atomic Habits.",
-    date: "April 15, 2023",
-    status: "complete",
-    tags: ["Books", "Habits", "Self-Improvement"],
-  },
-  {
-    id: "react-performance",
-    title: "React Performance Optimization Techniques",
-    description: "A collection of techniques to optimize React applications for better performance.",
-    date: "May 5, 2023",
-    status: "complete",
-    tags: ["React", "Performance", "JavaScript"],
-  },
-  {
-    id: "color-theory",
-    title: "Color Theory Basics for UI Design",
-    description: "Understanding color theory fundamentals and how to apply them to user interface design.",
-    date: "April 28, 2023",
-    status: "wip",
-    tags: ["Design", "Color", "UI"],
-  },
-  {
-    id: "technical-writing",
-    title: "Writing Tips for Technical Content",
-    description: "How to write clear, concise, and engaging technical content for developers.",
-    date: "March 20, 2023",
-    status: "complete",
-    tags: ["Writing", "Technical", "Communication"],
-  },
-];
-
-const allTags = [
-  "All",
-  "Books",
-  "Color",
-  "Communication",
-  "Creativity",
-  "Design",
-  "Development",
-  "Digital",
-  "Documentation",
-  "Focus",
-  "Future",
-  "Habits",
-  "JavaScript",
-  "Minimalism",
-  "Notes",
-  "Performance",
-  "Productivity",
-  "React",
-  "Self-Improvement",
-  "Systems",
-  "Technical",
-  "Typography",
-  "UI",
-  "Web",
-  "Writing",
-];
+// Separate filtered content by type for display
+const filteredEssays = filteredContent.filter(item => item.contentType === 'Essay');
+const filteredNotes = filteredContent.filter(item => item.contentType === 'Note');
 ---
 
 <Layout title="Garden | Kundai Clayton">
@@ -155,91 +96,138 @@ const allTags = [
 
     <section>
       <div class="flex border-b border-gray-800 mb-4">
-        <button class="px-4 py-2 text-white border-b-2 border-orange-500 font-medium">All</button>
-        <button class="px-4 py-2 text-gray-400 hover:text-white">Essays</button>
-        <button class="px-4 py-2 text-gray-400 hover:text-white">Notes</button>
+        <a href={`?type=all&status=${selectedStatus}&tag=${selectedTag}`} 
+           class={`px-4 py-2 ${selectedType === 'all' ? 'text-white border-b-2 border-orange-500 font-medium' : 'text-gray-400 hover:text-white'}`}>
+          All
+        </a>
+        <a href={`?type=essay&status=${selectedStatus}&tag=${selectedTag}`}
+           class={`px-4 py-2 ${selectedType === 'essay' ? 'text-white border-b-2 border-orange-500 font-medium' : 'text-gray-400 hover:text-white'}`}>
+          Essays
+        </a>
+        <a href={`?type=note&status=${selectedStatus}&tag=${selectedTag}`}
+           class={`px-4 py-2 ${selectedType === 'note' ? 'text-white border-b-2 border-orange-500 font-medium' : 'text-gray-400 hover:text-white'}`}>
+          Notes
+        </a>
       </div>
 
       <div class="flex flex-wrap gap-2 mb-4">
-        <button class="px-3 py-1 text-sm bg-gray-800 text-white rounded-md">All Statuses</button>
-        <button class="px-3 py-1 text-sm text-gray-400 hover:text-white rounded-md">Drafts</button>
-        <button class="px-3 py-1 text-sm text-gray-400 hover:text-white rounded-md">Work In Progress</button>
-        <button class="px-3 py-1 text-sm text-gray-400 hover:text-white rounded-md">Complete</button>
+        <a href={`?type=${selectedType}&status=all&tag=${selectedTag}`}
+           class={`px-3 py-1 text-sm ${selectedStatus === 'all' ? 'bg-gray-800 text-white' : 'text-gray-400 hover:text-white'} rounded-md`}>
+          All Statuses
+        </a>
+        <a href={`?type=${selectedType}&status=draft&tag=${selectedTag}`}
+           class={`px-3 py-1 text-sm ${selectedStatus === 'draft' ? 'bg-gray-800 text-white' : 'text-gray-400 hover:text-white'} rounded-md`}>
+          Drafts
+        </a>
+        <a href={`?type=${selectedType}&status=wip&tag=${selectedTag}`}
+           class={`px-3 py-1 text-sm ${selectedStatus === 'wip' ? 'bg-gray-800 text-white' : 'text-gray-400 hover:text-white'} rounded-md`}>
+          Work In Progress
+        </a>
+        <a href={`?type=${selectedType}&status=complete&tag=${selectedTag}`}
+           class={`px-3 py-1 text-sm ${selectedStatus === 'complete' ? 'bg-gray-800 text-white' : 'text-gray-400 hover:text-white'} rounded-md`}>
+          Complete
+        </a>
       </div>
 
       <div class="mb-6">
         <h3 class="text-sm font-medium mb-2">Filter by Tag:</h3>
         <div class="flex flex-wrap gap-2">
           {allTags.map((tag) => (
-            <button
-              class={`px-2 py-1 text-xs rounded-md ${tag === "All" ? "bg-gray-700 text-white" : "bg-gray-800 text-gray-400 hover:text-white"}`}
+            <a
+              href={`?type=${selectedType}&status=${selectedStatus}&tag=${tag === 'All' ? 'all' : tag}`}
+              class={`px-2 py-1 text-xs rounded-md ${(tag === 'All' && selectedTag === 'all') || tag === selectedTag ? 'bg-gray-700 text-white' : 'bg-gray-800 text-gray-400 hover:text-white'}`}
             >
               {tag}
-            </button>
+            </a>
           ))}
         </div>
       </div>
     </section>
 
-    <section>
-      <h2 class="text-2xl font-bold mb-6">Essays</h2>
-      <div class="grid md:grid-cols-2 gap-6">
-        {essays.map((essay) => (
-          <article class="bg-[#1e242a] rounded-lg overflow-hidden">
-            <div class="relative">
-              <div class="absolute top-4 left-4 z-10">
-                <Tag variant={essay.status === "complete" ? "orange" : "dark"}>
-                  {essay.status === "complete" ? "Complete" : "WIP"}
+    {(selectedType === 'all' || selectedType === 'essay') && filteredEssays.length > 0 && (
+      <section>
+        <h2 class="text-2xl font-bold mb-6">Essays</h2>
+        <div class="grid md:grid-cols-2 gap-6">
+          {filteredEssays.map((essay) => (
+            <article class="bg-[#1e242a] rounded-lg overflow-hidden">
+              <div class="relative">
+                <div class="absolute top-4 left-4 z-10">
+                  <Tag variant={essay.status.toLowerCase() === "complete" ? "orange" : "dark"}>
+                    {essay.status}
+                  </Tag>
+                </div>
+                {essay.coverImage ? (
+                  <img
+                    src={essay.coverImage}
+                    alt={essay.title}
+                    width={500}
+                    height={300}
+                    class="w-full h-48 object-cover"
+                  />
+                ) : (
+                  <div class="w-full h-48 bg-gray-800 flex items-center justify-center">
+                    <span class="text-gray-400">No cover image</span>
+                  </div>
+                )}
+              </div>
+              <div class="p-5">
+                <div class="text-sm text-gray-400 mb-1">{essay.date}</div>
+                <h3 class="text-lg font-bold mb-2">
+                  <a href={`/blog/${essay.slug}`} class="hover:text-orange-500">{essay.title}</a>
+                </h3>
+                <p class="text-gray-300 text-sm mb-4">{essay.description}</p>
+                <div class="flex flex-wrap gap-2">
+                  {essay.tags.map((tag) => (
+                    <a href={`?type=${selectedType}&status=${selectedStatus}&tag=${tag}`}>
+                      <Tag variant="dark">
+                        {tag}
+                      </Tag>
+                    </a>
+                  ))}
+                </div>
+              </div>
+            </article>
+          ))}
+        </div>
+      </section>
+    )}
+
+    {(selectedType === 'all' || selectedType === 'note') && filteredNotes.length > 0 && (
+      <section>
+        <h2 class="text-2xl font-bold mb-6">Notes</h2>
+        <div class="grid md:grid-cols-3 gap-6">
+          {filteredNotes.map((note) => (
+            <article class="bg-[#1e242a] rounded-lg p-5">
+              <div class="flex justify-between items-start mb-3">
+                <div class="text-sm text-gray-400">{note.date}</div>
+                <Tag variant={note.status.toLowerCase() === "complete" ? "orange" : "dark"}>
+                  {note.status}
                 </Tag>
               </div>
-              <Image
-                src={essay.image}
-                alt={essay.title}
-                width={500}
-                height={300}
-                class="w-full h-48 object-cover"
-              />
-            </div>
-            <div class="p-5">
-              <div class="text-sm text-gray-400 mb-1">{essay.date}</div>
-              <h3 class="text-lg font-bold mb-2">{essay.title}</h3>
-              <p class="text-gray-300 text-sm mb-4">{essay.description}</p>
+              <h3 class="text-lg font-bold mb-2">
+                <a href={`/blog/${note.slug}`} class="hover:text-orange-500">{note.title}</a>
+              </h3>
+              <p class="text-gray-300 text-sm mb-4">{note.description}</p>
               <div class="flex flex-wrap gap-2">
-                {essay.tags.map((tag) => (
-                  <Tag variant="dark">
-                    {tag}
-                  </Tag>
+                {note.tags.map((tag) => (
+                  <a href={`?type=${selectedType}&status=${selectedStatus}&tag=${tag}`}>
+                    <Tag variant="dark">
+                      {tag}
+                    </Tag>
+                  </a>
                 ))}
               </div>
-            </div>
-          </article>
-        ))}
-      </div>
-    </section>
+            </article>
+          ))}
+        </div>
+      </section>
+    )}
 
-    <section>
-      <h2 class="text-2xl font-bold mb-6">Notes</h2>
-      <div class="grid md:grid-cols-3 gap-6">
-        {notes.map((note) => (
-          <article class="bg-[#1e242a] rounded-lg p-5">
-            <div class="flex justify-between items-start mb-3">
-              <div class="text-sm text-gray-400">{note.date}</div>
-              <Tag variant={note.status === "complete" ? "orange" : "dark"}>
-                {note.status === "complete" ? "Complete" : "WIP"}
-              </Tag>
-            </div>
-            <h3 class="text-lg font-bold mb-2">{note.title}</h3>
-            <p class="text-gray-300 text-sm mb-4">{note.description}</p>
-            <div class="flex flex-wrap gap-2">
-              {note.tags.map((tag) => (
-                <Tag variant="dark">
-                  {tag}
-                </Tag>
-              ))}
-            </div>
-          </article>
-        ))}
+    {filteredContent.length === 0 && (
+      <div class="py-10 text-center">
+        <p class="text-gray-400">No content matches your selected filters.</p>
+        <a href="/garden" class="text-orange-500 hover:underline mt-2 inline-block">Clear filters</a>
       </div>
-    </section>
+    )}
   </div>
 </Layout>

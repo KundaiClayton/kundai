@@ -3,49 +3,72 @@ import { Image } from 'astro:assets';
 import Layout from '../layouts/Layout.astro';
 import Tag from '../components/Tag.astro';
 
-// Define your social links
 const socialLinks = [
   {
-    platform: "Twitter",
-    description: "Sharing thoughts and updates on design and technology",
-    url: "https://twitter.com",
-    handle: "@johndoe"
+    platform: "Email",
+    description: "For work opportunities, collaboration, or product conversations",
+    url: "mailto:Kundai@mohara.co",
+    handle: "Kundai@mohara.co"
   },
   {
     platform: "GitHub",
     description: "Code, open source projects, and experiments",
-    url: "https://github.com",
-    handle: "github.com/johndoe"
+    url: "https://github.com/KundaiClayton",
+    handle: "github.com/KundaiClayton"
   },
   {
     platform: "LinkedIn",
-    description: "Professional experience and day-to-day work experience",
-    url: "https://linkedin.com",
-    handle: "linkedin.com/in/johndoe"
+    description: "Professional experience and day-to-day work",
+    url: "https://www.linkedin.com/in/kundai-chatambudza",
+    handle: "linkedin.com/in/kundai-chatambudza"
+  },
+  {
+    platform: "CV",
+    description: "Download a copy of my resume",
+    url: "/resume.pdf",
+    handle: "Download CV"
   }
 ];
 
-// Define your projects
 const projects = [
   {
-    title: "Personal Digital Garden",
-    description: "An ongoing digital garden built with Next.js and Tailwind CSS, focused on essays, notes, code, and projects.",
-    image: "https://picsum.photos/800/400",
-    tags: ["Next.js", "TypeScript", "Jamstack"],
+    title: "AgriData Technologies",
+    description:
+      "Co-founder and product/technical lead. A WhatsApp-based pest surveillance and agricultural intelligence platform for institutions in Zimbabwe, combining field reporting with a web dashboard for monitoring pest activity, reporting coverage, and outbreak risk across regions.",
+    image: "https://picsum.photos/800/400?random=agridata",
+    tags: ["Next.js", "TypeScript", "Tailwind CSS", "WhatsApp", "PostgreSQL", "AI"],
     link: "#"
   },
   {
-    title: "Minimalist UI Component Library",
-    description: "A collection of accessible, component-based UI elements designed with minimalism and accessibility in mind.",
-    image: "https://picsum.photos/800/400?random=2",
-    tags: ["React", "TypeScript", "Accessibility"],
+    title: "Mindfull Mobile App",
+    description:
+      "Full-stack / React Native developer on a health and wellness app rebuilt from a white-label setup into a custom iOS and Android product. Contributed to technical solution design, mobile architecture, AI-assisted development practices, and feature delivery.",
+    image: "https://picsum.photos/800/400?random=mindfull",
+    tags: ["React Native", "Expo", "TypeScript", "Supabase", "tRPC", "Node.js"],
     link: "#"
   },
   {
-    title: "Markdown Note Editor",
-    description: "A distraction-free markdown editor for taking notes and text parsing with local storage.",
-    image: "https://picsum.photos/800/400?random=3",
-    tags: ["JavaScript", "Markdown", "LocalStorage"],
+    title: "Louvelle",
+    description:
+      "Frontend / mobile developer on a peer-to-peer fashion rental app. Helped set up the mobile frontend architecture, EAS builds, CI/CD via GitHub Actions, and supported the app from early MVP into a more mature product.",
+    image: "https://picsum.photos/800/400?random=louvelle",
+    tags: ["React Native", "Expo", "TypeScript", "Expo Router", "EAS", "Stripe"],
+    link: "#"
+  },
+  {
+    title: "Voessa AI Voice Coach",
+    description:
+      "Founder and full-stack developer of an AI-powered communication coaching app. Records speech, transcribes audio, analyses filler words and cadence, and gives feedback for clearer communication.",
+    image: "https://picsum.photos/800/400?random=voessa",
+    tags: ["React Native", "TypeScript", "Convex", "Vercel AI SDK"],
+    link: "#"
+  },
+  {
+    title: "Quest",
+    description:
+      "A personal growth app that turns life goals and hobbies into a gamified progression system. Add goals like learning guitar, build habits around them, and earn badges as you progress.",
+    image: "https://picsum.photos/800/400?random=quest",
+    tags: ["React Native", "TypeScript", "Product Design"],
     link: "#"
   }
 ];
@@ -53,12 +76,12 @@ const projects = [
 const profileImage = "https://picsum.photos/100/100";
 ---
 
-<Layout title="About | Kundai Clayton">
+<Layout title="About | Kundai Chatambudza">
   <div class="space-y-10">
     <section>
       <h1 class="text-3xl font-bold mb-2">About Me</h1>
       <p class="text-gray-300">
-        Designer, developer, and writer exploring the intersection of technology and creativity.
+        Full-stack mobile developer building thoughtful, AI-enabled products for real-world workflows.
       </p>
     </section>
 
@@ -75,26 +98,40 @@ const profileImage = "https://picsum.photos/100/100";
             />
           </div>
           <p>
-            Hello! I'm John, a designer and developer with a passion for creating interfaces, functional systems, and
-            thoughtful digital experiences.
+            Hi, I'm Kundai — a full-stack and mobile developer with experience building React Native, TypeScript, Expo,
+            Supabase, tRPC, and AI-assisted product workflows. I care about building software that is useful, calm, and
+            grounded in real human needs.
           </p>
         </div>
 
         <p>
-          I currently work as a senior designer at a tech company, where I focus on creating component-based design
-          systems and interfaces. My background in both design and development allows me to bridge the gap between
-          aesthetics and implementation.
+          I'm a full-stack mobile developer with a computer science and applied statistics background, focused on
+          building practical software products from idea to production. My recent work has centred around React Native,
+          Expo, TypeScript, Supabase, tRPC, Node.js, and AI-assisted development workflows.
         </p>
 
         <p>
-          This digital garden is my space to think openly about design, technology, and creativity. It's a collection
-          of essays, notes, and thoughts on topics I'm exploring, including design systems, typography, interaction,
-          and the intersection of technology and humanity.
+          At MOHARA, I've worked on mobile and full-stack projects including Louvelle and Mindfull, contributing to app
+          architecture, technical setup, CI/CD, developer workflow improvements, and production feature delivery. I've
+          also helped teams use AI coding tools more effectively by setting up better practices around technical
+          planning, code generation, and design-to-code workflows.
         </p>
 
         <p>
-          When I'm not designing or coding, you can find me reading books on philosophy and design, experimenting with
-          photography, and hiking in the mountains.
+          Outside of client work, I'm a co-founder of AgriData Technologies, where we're building WhatsApp-based pest
+          surveillance and data tools for agricultural institutions in Zimbabwe. I'm also exploring products around
+          communication coaching, personal growth, journaling, and digital gardens.
+        </p>
+
+        <p>
+          I'm interested in the overlap between technology, mindfulness, ethics, AI, and human behaviour. My work is
+          driven by a simple question: how can software help people act with more clarity, care, and agency in the real
+          world?
+        </p>
+
+        <p>
+          When I'm not coding, I'm usually learning guitar, thinking about mindfulness and ethics, writing notes, or
+          exploring ideas for products that make people's lives a little better.
         </p>
       </div>
 
@@ -111,6 +148,15 @@ const profileImage = "https://picsum.photos/100/100";
                   {handle}
                 </a>
               </div>
+            ))}
+          </div>
+        </div>
+
+        <div class="bg-[#1e242a] rounded-lg p-5">
+          <h2 class="text-lg font-bold mb-4">Stack</h2>
+          <div class="flex flex-wrap gap-2">
+            {["React Native", "Expo", "TypeScript", "React", "Next.js", "Supabase", "tRPC", "PostgreSQL"].map((tech) => (
+              <Tag variant="dark">{tech}</Tag>
             ))}
           </div>
         </div>

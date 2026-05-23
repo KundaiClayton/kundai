@@ -1,5 +1,4 @@
 ---
-import Tag from './Tag.astro';
 import { getRecentContent } from '../lib/notion';
 
 interface Note {
@@ -13,107 +12,84 @@ interface Note {
   coverImage: string | null;
 }
 
-// Define props interface to allow passing notes from parent
 interface Props {
   notes?: Note[];
 }
 
 const { notes: propNotes } = Astro.props;
 
-// Fetch notes from Notion if not provided as props
 let notes: Note[] = [];
 if (propNotes) {
   notes = propNotes;
 } else {
   try {
-    // Fetch the 3 most recent notes from Notion
     notes = await getRecentContent('Note', 3);
-    console.log('Fetched recent notes:', notes);
   } catch (error) {
     console.error('Error fetching recent notes:', error);
   }
 }
-
-// Fallback data if no notes are available from Notion
-const fallbackNotes: Note[] = [
-  {
-    id: "typography-tips",
-    title: "Typography Tips for Developers",
-    description:
-      "A collection of practical typography tips that developers can easily implement to improve readability.",
-    date: "June 1, 2023",
-    status: "wip",
-    tags: ["Design", "Typography", "Development"],
-    slug: "typography-tips",
-    coverImage: null
-  },
-  {
-    id: "zettelkasten",
-    title: "Zettelkasten Note-Taking Method",
-    description:
-      "Quick thoughts on implementing the Zettelkasten method for better knowledge management and idea connections.",
-    date: "May 10, 2023",
-    status: "complete",
-    tags: ["Productivity", "Notes"],
-    slug: "zettelkasten",
-    coverImage: null
-  },
-  {
-    id: "react-performance",
-    title: "React Performance Optimization Techniques",
-    description: "A collection of techniques to optimize React applications for better performance.",
-    date: "May 5, 2023",
-    status: "complete",
-    tags: ["React", "Performance", "JavaScript"],
-    slug: "react-performance",
-    coverImage: null
-  },
-];
-
-// Use fetched notes if available, otherwise use fallback
-const displayNotes = notes.length > 0 ? notes : fallbackNotes;
 ---
 
-<section class="mb-16">
-  <div class="mb-6">
-    <h2 class="text-2xl md:text-3xl font-bold mb-2">Recent Notes</h2>
-    <p class="text-gray-400">Shorter thoughts, observations, and works in progress.</p>
+<section class="max-w-4xl mx-auto mb-20">
+  <hr class="border-gray-800 mb-20" />
+
+  <div class="mb-10 flex items-end justify-between flex-wrap gap-4">
+    <div>
+      <p class="text-xs uppercase tracking-[0.25em] text-gray-500 font-mono mb-3">03 / Recent notes</p>
+      <h2 class="text-3xl sm:text-4xl font-bold accent-underline">Shorter thoughts</h2>
+    </div>
+    <a
+      href="/garden?type=note"
+      class="text-sm font-mono text-orange-500 hover:underline"
+    >
+      All notes →
+    </a>
   </div>
-  <div class="grid md:grid-cols-3 gap-6">
-    {
-      displayNotes.map((note) => (
-        <article class="bg-[#1e242a] rounded-lg p-6 flex flex-col h-full">
-          <div class="mb-2 flex justify-between items-center">
-            <div class="text-sm text-gray-400">{note.date}</div>
-            <Tag variant={note.status === "complete" ? "orange" : "dark"}>
-              {note.status === "complete" ? "Complete" : "WIP"}
-            </Tag>
+
+  {notes.length === 0 ? (
+    <div class="border border-dashed border-gray-800 rounded-xl p-10 text-center">
+      <p class="text-gray-500 italic">
+        No notes yet — short thoughts will start landing here soon.
+      </p>
+    </div>
+  ) : (
+    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-px bg-gray-800 border border-gray-800 rounded-xl overflow-hidden">
+      {notes.map((note) => (
+        <a
+          href={`/blog/${note.slug}`}
+          class="block bg-background p-6 hover:bg-[#1e242a] transition-colors group h-full"
+        >
+          <div class="flex items-center justify-between mb-3">
+            <span class="text-xs font-mono text-gray-500">{note.date}</span>
+            <span class="flex items-center gap-1.5">
+              <span class={`w-1.5 h-1.5 rounded-full ${note.status === "complete" ? "bg-orange-500" : "bg-gray-600"}`}></span>
+              <span class="text-[10px] uppercase tracking-wider font-mono text-gray-500">
+                {note.status === "complete" ? "Complete" : "WIP"}
+              </span>
+            </span>
           </div>
-          <h3 class="text-lg font-bold mb-2">{note.title}</h3>
-          <p class="text-gray-300 text-sm mb-6">{note.description}</p>
-          <div class="mt-auto flex flex-wrap gap-2 mb-4">
-            {note.tags.map((tag) => (
-              <Tag variant="dark">
-                {tag}
-              </Tag>
+          <h3 class="text-lg font-bold mb-3 group-hover:text-orange-500 transition-colors leading-snug">
+            {note.title}
+          </h3>
+          <p class="text-gray-400 text-sm leading-relaxed mb-4 line-clamp-3">
+            {note.description}
+          </p>
+          <div class="flex flex-wrap gap-2 mt-auto">
+            {note.tags.slice(0, 3).map((tag) => (
+              <span class="text-[10px] px-2 py-0.5 rounded-full bg-gray-800/60 text-gray-500 border border-gray-700">{tag}</span>
             ))}
           </div>
-          <a 
-            href={`/blog/${note.slug}`}
-            class="text-accent-orange hover:text-accent-orange/80 font-medium mt-auto inline-block"
-          >
-            Read more →
-          </a>
-        </article>
-      ))
-    }
-  </div>
-  <div class="mt-10 text-center">
+        </a>
+      ))}
+    </div>
+  )}
+
+  <div class="mt-12 flex justify-center">
     <a
       href="/garden"
-      class="inline-flex items-center px-4 py-2 border border-gray-700 rounded-md text-sm font-medium hover:bg-gray-800 transition-colors"
+      class="inline-flex items-center gap-2 px-6 py-3 border border-gray-700 rounded-lg text-sm font-medium text-gray-300 hover:border-orange-500/40 hover:text-white transition-colors"
     >
-      Explore the Garden →
+      Explore the full garden <span aria-hidden="true">→</span>
     </a>
   </div>
 </section>

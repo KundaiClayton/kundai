@@ -1,9 +1,6 @@
 ---
-import { Image } from 'astro:assets';
-import Tag from './Tag.astro';
 import { getFeaturedContent } from '../lib/notion';
 
-// Define the Essay type based on your Notion data structure
 interface Essay {
   id: string;
   title: string;
@@ -19,14 +16,12 @@ interface Essay {
   }[];
 }
 
-// Accept essays as a prop or fetch from Notion if not provided
 interface Props {
   essays?: Essay[];
 }
 
 const { essays: propEssays } = Astro.props;
 
-// Fetch essays from Notion if not provided as props
 let essays: Essay[] = [];
 if (propEssays) {
   essays = propEssays;
@@ -37,89 +32,62 @@ if (propEssays) {
     console.error('Error fetching featured essays:', error);
   }
 }
-
-// Fallback data if no essays are available
-const fallbackEssays: Essay[] = [
-  {
-    id: "design-systems",
-    title: "The Evolution of Design Systems",
-    description:
-      "Exploring how design systems have evolved from simple style guides to complex, living documentation that shapes product development.",
-    date: "May 15, 2023",
-    coverImage: "https://picsum.photos/600/400",
-    status: "complete",
-    tags: ["Design", "Systems", "Documentation"],
-    slug: "design-systems"
-  },
-  {
-    id: "digital-minimalism",
-    title: "Digital Minimalism: Finding Focus in a Noisy World",
-    description:
-      "An exploration of how minimalist principles can be applied to our digital lives to reduce distraction and increase meaning.",
-    date: "April 22, 2023",
-    coverImage: "https://picsum.photos/600/400?random=2",
-    status: "complete",
-    tags: ["Minimalism", "Digital", "Focus"],
-    slug: "digital-minimalism"
-  },
-];
-
-console.log('Essays:', essays);
-
-// Use real essays if available, otherwise fallback
-const displayEssays = essays.length > 0 ? essays : fallbackEssays;
 ---
 
-<section class="mb-16">
-  <div class="mb-6">
-    <h2 class="text-2xl md:text-3xl font-bold mb-2">Featured Essays</h2>
-    <p class="text-gray-400">Longer, more polished pieces on design, technology, and creativity.</p>
-    <div class="accent-underline"></div>
+<section class="max-w-4xl mx-auto mb-20">
+  <hr class="border-gray-800 mb-20" />
+
+  <div class="mb-10 flex items-end justify-between flex-wrap gap-4">
+    <div>
+      <p class="text-xs uppercase tracking-[0.25em] text-gray-500 font-mono mb-3">02 / Featured essays</p>
+      <h2 class="text-3xl sm:text-4xl font-bold accent-underline">Longer reads</h2>
+    </div>
+    <a
+      href="/garden?type=essay"
+      class="text-sm font-mono text-orange-500 hover:underline"
+    >
+      All essays →
+    </a>
   </div>
-  <div class="space-y-8">
-    {
-      displayEssays.map((essay) => (
-        <article class="grid md:grid-cols-2 gap-6 bg-[#1e242a] rounded-lg overflow-hidden">
-          <div class="relative">
-            <div class="absolute top-4 left-4 z-10">
-              <Tag variant={essay.status === "complete" ? "orange" : "dark"}>
-                {essay.status === "complete" ? "Complete" : "WIP"}
-              </Tag>
-            </div>
-            {essay.coverImage ? (
-              <img
-                src={essay.coverImage}
-                alt={essay.title}
-                width={600}
-                height={400}
-                class="h-full w-full object-cover"
-              />
-            ) : (
-              <div class="h-full w-full bg-gray-800 flex items-center justify-center">
-                <span class="text-gray-500">No image available</span>
-              </div>
-            )}
+
+  {essays.length === 0 ? (
+    <div class="border border-dashed border-gray-800 rounded-xl p-10 text-center">
+      <p class="text-gray-500 italic">
+        No featured essays yet — the garden is still being seeded.
+      </p>
+    </div>
+  ) : (
+    <div class="divide-y divide-gray-800 border-y border-gray-800">
+      {essays.map((essay, idx) => (
+        <a
+          href={`/blog/${essay.slug}`}
+          class="block py-8 first:pt-8 last:pb-8 group"
+        >
+          <div class="flex items-baseline gap-4 mb-3 flex-wrap">
+            <span class="text-xs font-mono text-gray-600">0{idx + 1}</span>
+            <span class="text-xs uppercase tracking-wider font-mono text-orange-500">
+              {essay.status === "complete" ? "Complete" : "WIP"}
+            </span>
+            <span class="text-xs font-mono text-gray-500 ml-auto">{essay.date}</span>
           </div>
-          <div class="p-6 flex flex-col">
-            <div class="mb-2 text-sm text-gray-400">{essay.date}</div>
-            <h3 class="text-xl font-bold mb-2">{essay.title}</h3>
-            <p class="text-gray-300 mb-6">{essay.description}</p>
-            <div class="mt-auto flex flex-wrap gap-2 mb-4">
+          <h3 class="text-2xl sm:text-3xl font-bold mb-3 group-hover:text-orange-500 transition-colors pl-8">
+            {essay.title}
+          </h3>
+          <p class="text-gray-300 leading-relaxed mb-4 pl-8 max-w-3xl">
+            {essay.description}
+          </p>
+          <div class="flex items-center gap-3 pl-8 flex-wrap">
+            <div class="flex flex-wrap gap-2">
               {essay.tags.map((tag) => (
-                <Tag variant="dark">
-                  {tag}
-                </Tag>
+                <span class="text-xs px-2.5 py-1 rounded-full bg-gray-800/60 text-gray-400 border border-gray-700">{tag}</span>
               ))}
             </div>
-            <a 
-              href={`/blog/${essay.slug}`}
-              class="text-accent-orange hover:text-accent-orange/80 font-medium mt-auto inline-block"
-            >
-              Read more →
-            </a>
+            <span class="text-sm font-mono text-orange-500 ml-auto group-hover:translate-x-1 transition-transform">
+              Read →
+            </span>
           </div>
-        </article>
-      ))
-    }
-  </div>
+        </a>
+      ))}
+    </div>
+  )}
 </section>

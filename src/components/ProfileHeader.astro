@@ -1,11 +1,39 @@
 ---
-// No props or imports needed
+// Hero for the homepage. Editorial layout matching /now and /about.
 ---
 
-<section class="py-16 md:py-24">
-    <h1 class="text-4xl md:text-5xl font-bold mb-4">John Doe</h1>
-    <p class="text-lg text-gray-300 max-w-2xl">
-      Designer, developer, and writer exploring the intersection of technology and creativity.
-    </p>
-    <div class="accent-underline"></div>
-  </section>
+<section class="max-w-4xl mx-auto pt-12 sm:pt-20 pb-16 sm:pb-24">
+  <p class="text-xs uppercase tracking-[0.25em] text-orange-500 font-mono mb-6">
+    Kundai Clayton Chatambudza · Digital garden
+  </p>
+
+  <h1 class="text-5xl sm:text-7xl font-bold tracking-tight mb-8 leading-[1.05]">
+    Software for the<br />
+    real world<span class="text-orange-500">.</span>
+  </h1>
+
+  <p class="text-xl sm:text-2xl text-gray-300 leading-relaxed max-w-2xl mb-10">
+    Full-stack mobile engineer building thoughtful, AI-assisted products. This is where the work lives alongside the thinking behind it — essays, notes, projects, half-formed ideas.
+  </p>
+
+  <div class="flex flex-wrap gap-3">
+    <a
+      href="/about"
+      class="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-orange-500 text-white text-sm font-medium hover:bg-orange-600 transition-colors"
+    >
+      About me <span aria-hidden="true">→</span>
+    </a>
+    <a
+      href="/garden"
+      class="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg border border-gray-700 text-gray-300 text-sm font-medium hover:border-orange-500/40 hover:text-white transition-colors"
+    >
+      Explore the garden
+    </a>
+    <a
+      href="/now"
+      class="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg border border-gray-700 text-gray-300 text-sm font-medium hover:border-orange-500/40 hover:text-white transition-colors"
+    >
+      What I'm doing now
+    </a>
+  </div>
+</section>

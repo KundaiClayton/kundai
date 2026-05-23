@@ -1,196 +1,278 @@
 ---
-import { Image } from 'astro:assets';
 import Layout from '../layouts/Layout.astro';
-import Tag from '../components/Tag.astro';
 
 const socialLinks = [
   {
     platform: "Email",
-    description: "For work opportunities, collaboration, or product conversations",
+    description: "Work, collaboration, product chats",
     url: "mailto:Kundai@mohara.co",
-    handle: "Kundai@mohara.co"
+    handle: "Kundai@mohara.co",
   },
   {
     platform: "GitHub",
-    description: "Code, open source projects, and experiments",
+    description: "Code and experiments",
     url: "https://github.com/KundaiClayton",
-    handle: "github.com/KundaiClayton"
+    handle: "@KundaiClayton",
   },
   {
     platform: "LinkedIn",
-    description: "Professional experience and day-to-day work",
+    description: "Day-to-day professional work",
     url: "https://www.linkedin.com/in/kundai-chatambudza",
-    handle: "linkedin.com/in/kundai-chatambudza"
+    handle: "kundai-chatambudza",
   },
   {
     platform: "CV",
-    description: "Download a copy of my resume",
+    description: "Download a PDF copy",
     url: "/resume.pdf",
-    handle: "Download CV"
-  }
+    handle: "resume.pdf",
+  },
+];
+
+const stackGroups = [
+  { label: "Mobile", items: ["React Native", "Expo", "Expo Router", "EAS"] },
+  { label: "Web", items: ["React", "Next.js", "Astro", "Tailwind CSS"] },
+  { label: "Backend & data", items: ["TypeScript", "Node.js", "tRPC", "Supabase", "PostgreSQL", "Prisma"] },
+  { label: "AI & tooling", items: ["Claude", "Cursor", "Vercel AI SDK", "Convex", "Code Connect"] },
 ];
 
 const projects = [
   {
     title: "AgriData Technologies",
+    role: "Co-founder · Product & Engineering",
+    period: "2024 — Present",
     description:
-      "Co-founder and product/technical lead. A WhatsApp-based pest surveillance and agricultural intelligence platform for institutions in Zimbabwe, combining field reporting with a web dashboard for monitoring pest activity, reporting coverage, and outbreak risk across regions.",
-    image: "https://picsum.photos/800/400?random=agridata",
-    tags: ["Next.js", "TypeScript", "Tailwind CSS", "WhatsApp", "PostgreSQL", "AI"],
-    link: "#"
+      "WhatsApp-based pest and disease reporting paired with a web dashboard for institutions in Zimbabwe. Field officers report from low-bandwidth environments; coordinators and researchers see real-time coverage, severity, and outbreak risk across regions.",
+    tags: ["Next.js", "TypeScript", "PostgreSQL", "WhatsApp", "AI"],
+    link: "https://agridata-ai.vercel.app/",
+    linkLabel: "agridata-ai.vercel.app",
   },
   {
-    title: "Mindfull Mobile App",
+    title: "Mindfull",
+    role: "Full-stack mobile engineer · MOHARA",
+    period: "2025",
     description:
-      "Full-stack / React Native developer on a health and wellness app rebuilt from a white-label setup into a custom iOS and Android product. Contributed to technical solution design, mobile architecture, AI-assisted development practices, and feature delivery.",
-    image: "https://picsum.photos/800/400?random=mindfull",
+      "Moved a health and wellness product off a white-label platform into a custom iOS and Android app. Contributed to technical solution design, mobile architecture, backend integration, and AI-assisted development practices alongside the broader team.",
     tags: ["React Native", "Expo", "TypeScript", "Supabase", "tRPC", "Node.js"],
-    link: "#"
+    link: "#",
+    linkLabel: "Case study coming",
   },
   {
     title: "Louvelle",
+    role: "Lead React Native developer · MOHARA",
+    period: "2024",
     description:
-      "Frontend / mobile developer on a peer-to-peer fashion rental app. Helped set up the mobile frontend architecture, EAS builds, CI/CD via GitHub Actions, and supported the app from early MVP into a more mature product.",
-    image: "https://picsum.photos/800/400?random=louvelle",
-    tags: ["React Native", "Expo", "TypeScript", "Expo Router", "EAS", "Stripe"],
-    link: "#"
+      "Greenfield frontend architecture for a high-fashion peer-to-peer rental iOS MVP. Built core rental flows, checkout, booking, and cart-hold logic; tuned image-heavy feed performance; and set up CI/CD, EAS builds, documentation, and release workflows.",
+    tags: ["React Native", "Expo", "TypeScript", "Expo Router", "NativeWind", "EAS"],
+    link: "#",
+    linkLabel: "Case study coming",
   },
   {
-    title: "Voessa AI Voice Coach",
+    title: "Voessa",
+    role: "Founder · Full-stack",
+    period: "2025 — Present",
     description:
-      "Founder and full-stack developer of an AI-powered communication coaching app. Records speech, transcribes audio, analyses filler words and cadence, and gives feedback for clearer communication.",
-    image: "https://picsum.photos/800/400?random=voessa",
+      "AI communication coach. Records speech, transcribes audio, analyses filler words and cadence, then turns the signal into actionable feedback for clearer speaking.",
     tags: ["React Native", "TypeScript", "Convex", "Vercel AI SDK"],
-    link: "#"
+    link: "#",
+    linkLabel: "In development",
   },
   {
     title: "Quest",
+    role: "Builder",
+    period: "2025",
     description:
-      "A personal growth app that turns life goals and hobbies into a gamified progression system. Add goals like learning guitar, build habits around them, and earn badges as you progress.",
-    image: "https://picsum.photos/800/400?random=quest",
+      "Turns personal growth, hobbies, and goals into a gamified progression system — add a goal like learning guitar, build habits around it, earn small wins as you go.",
     tags: ["React Native", "TypeScript", "Product Design"],
-    link: "#"
-  }
+    link: "#",
+    linkLabel: "Concept",
+  },
 ];
 
-const profileImage = "https://picsum.photos/100/100";
+const principles = [
+  {
+    title: "Useful over impressive",
+    body: "Software earns its existence by helping someone act with more clarity. Polish is downstream of usefulness.",
+  },
+  {
+    title: "Calm by default",
+    body: "Tools that respect attention. No noise, no urgency theatre, no dark patterns dressed up as engagement.",
+  },
+  {
+    title: "Real-world constraints",
+    body: "Low connectivity, messy data, institutional workflows. The interesting work is fitting software to how people already work.",
+  },
+  {
+    title: "Honest about the seams",
+    body: "Working in the open — version-controlled writing, transparent decisions, work shown not just shipped.",
+  },
+];
 ---
 
 <Layout title="About | Kundai Chatambudza">
-  <div class="space-y-10">
-    <section>
-      <h1 class="text-3xl font-bold mb-2">About Me</h1>
-      <p class="text-gray-300">
-        Full-stack mobile developer building thoughtful, AI-enabled products for real-world workflows.
+  <main class="max-w-4xl mx-auto py-12 sm:py-20">
+    <!-- Hero -->
+    <section class="mb-20">
+      <p class="text-xs uppercase tracking-[0.25em] text-orange-500 font-mono mb-6">
+        Kundai Clayton Chatambudza
+      </p>
+      <h1 class="text-6xl sm:text-7xl font-bold tracking-tight mb-8">
+        About<span class="text-orange-500">.</span>
+      </h1>
+      <p class="text-xl sm:text-2xl text-gray-300 leading-relaxed max-w-2xl">
+        Full-stack mobile engineer building thoughtful, AI-assisted products for real-world workflows — from Cape Town and Harare.
       </p>
     </section>
 
-    <section class="grid md:grid-cols-3 gap-8">
-      <div class="md:col-span-2 space-y-6 text-gray-300">
-        <div class="flex gap-6 items-start">
-          <div class="flex-shrink-0">
-            <Image
-              src={profileImage}
-              alt="Profile"
-              width={100}
-              height={100}
-              class="rounded"
-            />
-          </div>
-          <p>
-            Hi, I'm Kundai — a full-stack and mobile developer with experience building React Native, TypeScript, Expo,
-            Supabase, tRPC, and AI-assisted product workflows. I care about building software that is useful, calm, and
-            grounded in real human needs.
-          </p>
+    <hr class="border-gray-800 mb-20" />
+
+    <!-- Intro with monogram -->
+    <section class="mb-20 grid md:grid-cols-3 gap-10">
+      <div class="md:col-span-1">
+        <!-- Stylised monogram avatar (replace with real photo when ready) -->
+        <div class="aspect-square w-40 sm:w-full max-w-[200px] rounded-2xl bg-gradient-to-br from-orange-500/20 via-orange-500/5 to-transparent border border-orange-500/30 flex items-center justify-center mb-6">
+          <span class="text-5xl font-bold tracking-tight text-orange-500/80">KC</span>
         </div>
-
-        <p>
-          I'm a full-stack mobile developer with a computer science and applied statistics background, focused on
-          building practical software products from idea to production. My recent work has centred around React Native,
-          Expo, TypeScript, Supabase, tRPC, Node.js, and AI-assisted development workflows.
+        <p class="text-xs font-mono text-gray-500 leading-relaxed">
+          Currently
+          <br />
+          <span class="text-gray-300">MOHARA · AgriData</span>
         </p>
-
-        <p>
-          At MOHARA, I've worked on mobile and full-stack projects including Louvelle and Mindfull, contributing to app
-          architecture, technical setup, CI/CD, developer workflow improvements, and production feature delivery. I've
-          also helped teams use AI coding tools more effectively by setting up better practices around technical
-          planning, code generation, and design-to-code workflows.
-        </p>
-
-        <p>
-          Outside of client work, I'm a co-founder of AgriData Technologies, where we're building WhatsApp-based pest
-          surveillance and data tools for agricultural institutions in Zimbabwe. I'm also exploring products around
-          communication coaching, personal growth, journaling, and digital gardens.
-        </p>
-
-        <p>
-          I'm interested in the overlap between technology, mindfulness, ethics, AI, and human behaviour. My work is
-          driven by a simple question: how can software help people act with more clarity, care, and agency in the real
-          world?
-        </p>
-
-        <p>
-          When I'm not coding, I'm usually learning guitar, thinking about mindfulness and ethics, writing notes, or
-          exploring ideas for products that make people's lives a little better.
+        <p class="text-xs font-mono text-gray-500 leading-relaxed mt-3">
+          Based in
+          <br />
+          <span class="text-gray-300">Cape Town / Harare</span>
         </p>
       </div>
 
-      <div class="space-y-6">
-        <div class="bg-[#1e242a] rounded-lg p-5">
-          <h2 class="text-lg font-bold mb-4">Connect</h2>
-
-          <div class="space-y-4">
-            {socialLinks.map(({ platform, description, url, handle }) => (
-              <div>
-                <h3 class="font-medium mb-1">{platform}</h3>
-                <p class="text-sm text-gray-400">{description}</p>
-                <a href={url} class="text-orange-500 text-sm hover:underline">
-                  {handle}
-                </a>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        <div class="bg-[#1e242a] rounded-lg p-5">
-          <h2 class="text-lg font-bold mb-4">Stack</h2>
-          <div class="flex flex-wrap gap-2">
-            {["React Native", "Expo", "TypeScript", "React", "Next.js", "Supabase", "tRPC", "PostgreSQL"].map((tech) => (
-              <Tag variant="dark">{tech}</Tag>
-            ))}
-          </div>
-        </div>
+      <div class="md:col-span-2 space-y-5 text-gray-300 leading-relaxed text-lg">
+        <p>
+          I'm a full-stack mobile engineer with a background in computer science and applied statistics. Most of my work sits at the intersection of <strong class="text-white">React Native</strong>, <strong class="text-white">TypeScript</strong>, and the messy reality of getting software into people's hands.
+        </p>
+        <p>
+          At <strong class="text-white">MOHARA</strong> I ship mobile and full-stack products from technical solution design through to release — Mindfull, Louvelle, Taos Ski Valley, Uply. I also help teams use AI coding tools more deliberately, with stronger practices around planning, code generation, and design-to-code.
+        </p>
+        <p>
+          Outside MOHARA I co-founded <strong class="text-white">AgriData Technologies</strong>, building pest surveillance for agricultural institutions in Zimbabwe. I'm also building <strong class="text-white">Voessa</strong>, an AI voice coach, and exploring <strong class="text-white">Quest</strong>, a gamified personal-growth app.
+        </p>
+        <p>
+          My work is driven by a single question:
+        </p>
+        <blockquote class="border-l-4 border-orange-500 pl-6 py-1 text-xl italic font-light text-gray-200">
+          How can software help people act with more clarity, care, and agency in the real world?
+        </blockquote>
       </div>
     </section>
 
-    <section>
-      <h2 class="text-2xl font-bold mb-6">Projects</h2>
+    <hr class="border-gray-800 mb-20" />
 
-      <div class="space-y-8">
-        {projects.map((project) => (
-          <div>
-            <Image
-              src={project.image}
-              alt={project.title}
-              width={800}
-              height={400}
-              class="w-full h-64 object-cover rounded-lg mb-4"
-            />
-            <h3 class="text-xl font-bold mb-1">{project.title}</h3>
-            <p class="text-gray-300 mb-3">
+    <!-- Principles -->
+    <section class="mb-20">
+      <div class="mb-10">
+        <p class="text-xs uppercase tracking-[0.25em] text-gray-500 font-mono mb-3">01 / Operating principles</p>
+        <h2 class="text-3xl font-bold accent-underline">How I think about the work</h2>
+      </div>
+
+      <div class="grid sm:grid-cols-2 gap-6">
+        {principles.map((p, idx) => (
+          <article class="bg-[#1e242a] border border-gray-800 rounded-xl p-6 sm:p-7 hover:border-orange-500/40 transition-colors relative">
+            <span class="text-xs font-mono text-gray-600 block mb-3">0{idx + 1}</span>
+            <h3 class="text-lg font-bold mb-2">{p.title}</h3>
+            <p class="text-gray-400 text-sm leading-relaxed">{p.body}</p>
+          </article>
+        ))}
+      </div>
+    </section>
+
+    <hr class="border-gray-800 mb-20" />
+
+    <!-- Projects -->
+    <section class="mb-20">
+      <div class="mb-10">
+        <p class="text-xs uppercase tracking-[0.25em] text-gray-500 font-mono mb-3">02 / Selected work</p>
+        <h2 class="text-3xl font-bold accent-underline">Projects</h2>
+      </div>
+
+      <div class="divide-y divide-gray-800 border-y border-gray-800">
+        {projects.map((project, idx) => (
+          <article class="py-10 first:pt-8 last:pb-8 group">
+            <div class="flex items-baseline gap-4 mb-3 flex-wrap">
+              <span class="text-xs font-mono text-gray-600">0{idx + 1}</span>
+              <h3 class="text-2xl sm:text-3xl font-bold">{project.title}</h3>
+              <span class="text-xs font-mono text-gray-500 ml-auto">{project.period}</span>
+            </div>
+            <p class="text-xs uppercase tracking-wider text-orange-500 font-mono mb-4 pl-8">
+              {project.role}
+            </p>
+            <p class="text-gray-300 leading-relaxed mb-5 pl-8 max-w-3xl">
               {project.description}
             </p>
-            <div class="flex flex-wrap gap-2">
+            <div class="flex flex-wrap gap-2 pl-8 mb-4">
               {project.tags.map((tag) => (
-                <Tag variant="dark">{tag}</Tag>
+                <span class="text-xs px-2.5 py-1 rounded-full bg-gray-800/60 text-gray-400 border border-gray-700">{tag}</span>
               ))}
             </div>
-            <a href={project.link} class="block mt-3 text-orange-500 hover:underline">
-              View Project →
+            <a href={project.link} class="inline-flex items-center gap-2 pl-8 text-sm text-orange-500 hover:underline font-mono">
+              {project.linkLabel}
+              <span aria-hidden="true">→</span>
             </a>
+          </article>
+        ))}
+      </div>
+    </section>
+
+    <hr class="border-gray-800 mb-20" />
+
+    <!-- Stack -->
+    <section class="mb-20">
+      <div class="mb-10">
+        <p class="text-xs uppercase tracking-[0.25em] text-gray-500 font-mono mb-3">03 / Toolkit</p>
+        <h2 class="text-3xl font-bold accent-underline">Stack</h2>
+      </div>
+
+      <div class="space-y-8">
+        {stackGroups.map((group) => (
+          <div class="grid sm:grid-cols-[140px_1fr] gap-4 sm:gap-8 items-start">
+            <h3 class="text-xs uppercase tracking-[0.2em] font-mono text-gray-500 pt-2">{group.label}</h3>
+            <div class="flex flex-wrap gap-2">
+              {group.items.map((item) => (
+                <span class="px-3 py-1.5 rounded-lg bg-[#1e242a] border border-gray-800 text-gray-300 text-sm hover:border-orange-500/40 hover:text-white transition-colors">
+                  {item}
+                </span>
+              ))}
+            </div>
           </div>
         ))}
       </div>
     </section>
-  </div>
+
+    <hr class="border-gray-800 mb-20" />
+
+    <!-- Connect -->
+    <section class="mb-20">
+      <div class="mb-10">
+        <p class="text-xs uppercase tracking-[0.25em] text-gray-500 font-mono mb-3">04 / Get in touch</p>
+        <h2 class="text-3xl font-bold accent-underline">Connect</h2>
+      </div>
+
+      <div class="grid sm:grid-cols-2 gap-px bg-gray-800 border border-gray-800 rounded-xl overflow-hidden">
+        {socialLinks.map(({ platform, description, url, handle }) => (
+          <a href={url} class="bg-background p-6 sm:p-7 hover:bg-[#1e242a] transition-colors group block">
+            <div class="flex items-baseline justify-between mb-2">
+              <h3 class="font-bold text-lg">{platform}</h3>
+              <span class="text-orange-500 opacity-0 group-hover:opacity-100 transition-opacity" aria-hidden="true">→</span>
+            </div>
+            <p class="text-gray-400 text-sm mb-3 leading-relaxed">{description}</p>
+            <p class="text-xs font-mono text-orange-500/80">{handle}</p>
+          </a>
+        ))}
+      </div>
+    </section>
+
+    <!-- Closing -->
+    <footer class="pt-10 border-t border-gray-800">
+      <p class="text-base sm:text-lg text-gray-400 leading-relaxed italic max-w-2xl">
+        When I'm not coding I'm usually learning guitar, writing notes, or thinking about mindfulness, ethics, and the shape software gives our days.
+      </p>
+    </footer>
+  </main>
 </Layout>

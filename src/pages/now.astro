@@ -2,48 +2,185 @@
 import Layout from '../layouts/Layout.astro';
 
 const lastUpdated = "May 23, 2026";
+
+const buildingNow = [
+  {
+    name: "MOHARA",
+    role: "Full-stack mobile engineer",
+    blurb: "React Native and full-stack TypeScript across technical solution design, backend integration, CI/CD, and production app delivery.",
+    tags: ["React Native", "TypeScript", "Expo", "Supabase", "tRPC"],
+  },
+  {
+    name: "AgriData Technologies",
+    role: "Co-founder",
+    blurb: "Agricultural intelligence for institutions in Zimbabwe. WhatsApp-based pest and disease reporting with real-time dashboards, maps, severity tracking, and alerts.",
+    tags: ["Pilot", "Zimbabwe", "WhatsApp", "Dashboards"],
+  },
+  {
+    name: "BOQ Generator",
+    role: "Builder",
+    blurb: "Turning project requirements into structured bills of quantities — practical business tooling that removes manual admin work.",
+    tags: ["Workflow automation", "Internal tooling"],
+  },
+];
+
+const recentMOHARA = [
+  {
+    name: "Mindfull",
+    summary: "Custom iOS and Android health & wellness app replacing a previous white-label product.",
+  },
+  {
+    name: "Louvelle",
+    summary: "Led frontend architecture for a high-fashion peer-to-peer rental iOS MVP.",
+  },
+  {
+    name: "Taos Ski Valley",
+    summary: "Rewrote a high-traffic Drupal site into a Next.js + Strapi platform.",
+  },
+  {
+    name: "Uply",
+    summary: "Recruitment platform on Next.js, tRPC, PostgreSQL, Prisma.",
+  },
+];
+
+const exploring = [
+  {
+    name: "Voessa",
+    blurb: "AI voice coaching for communication — recording, transcription, filler/cadence analysis.",
+  },
+  {
+    name: "Quest",
+    blurb: "Gamifying personal growth, hobbies, and goals into a playful life path.",
+  },
+];
+
+const learning = [
+  "React Native architecture",
+  "Full-stack TypeScript",
+  "Database design",
+  "AI-assisted development",
+  "Technical leadership",
+  "Product strategy",
+];
 ---
 
 <Layout title="Now | Kundai Chatambudza">
-  <div class="space-y-10">
-    <section>
-      <h1 class="text-3xl font-bold mb-2">Now</h1>
-      <p class="text-gray-300">What I'm currently doing, reading, listening to, and watching.</p>
+  <main class="max-w-4xl mx-auto py-12 sm:py-20">
+    <!-- Hero -->
+    <section class="mb-20">
+      <p class="text-xs uppercase tracking-[0.25em] text-orange-500 font-mono mb-6">
+        Updated {lastUpdated}
+      </p>
+      <h1 class="text-6xl sm:text-7xl font-bold tracking-tight mb-6">
+        Now<span class="text-orange-500">.</span>
+      </h1>
+      <p class="text-xl sm:text-2xl text-gray-300 leading-relaxed max-w-2xl">
+        Working across mobile apps, AI-assisted development, and early-stage product building.
+      </p>
     </section>
 
-    <section class="bg-[#1e242a] rounded-lg p-6">
-      <h2 class="text-xl font-bold mb-4">Currently</h2>
-      <div class="space-y-4 text-gray-300">
-        <p>
-          I'm currently working across mobile apps, AI-assisted development, and early-stage product building.
-        </p>
-        <p>
-          At <strong>MOHARA</strong>, I work on React Native and full-stack TypeScript projects, with recent experience across technical solution design, backend integrations, CI/CD, and production mobile app delivery.
-        </p>
-        <p>
-          Recently, I helped build <strong>Mindfull</strong>, a custom iOS and Android health and wellness app that replaced a previous white-label product. Before that, I led frontend architecture for <strong>Louvelle</strong>, a high-fashion peer-to-peer rental iOS app, and worked on projects like the <strong>Taos Ski Valley</strong> website and <strong>Uply</strong> recruitment platform.
-        </p>
-        <p>
-          Outside of MOHARA, I'm a co-founder of <strong>AgriData Technologies</strong>. We're building agricultural intelligence tools for institutions in Zimbabwe, combining WhatsApp-based pest and disease reporting with real-time dashboards, maps, severity tracking, and alerts.
-        </p>
-        <p>
-          I'm also working as a builder on a <strong>BOQ Generator</strong> app, helping turn project requirements into structured bills of quantities and reducing manual admin work for teams.
-        </p>
-        <p>
-          My current learning focus is React Native architecture, full-stack TypeScript, database design, AI-assisted development, technical leadership, and product strategy.
-        </p>
-        <p>
-          On the side, I'm exploring <strong>Voessa</strong>, an AI voice coaching app, and <strong>Quest</strong>, a gamified personal growth app.
-        </p>
-        <p>
-          When I'm not coding, I'm usually learning guitar, writing notes, thinking about mindfulness and ethics, or exploring product ideas.
-        </p>
-        <p class="pt-2">
-          This page was inspired by the <a href="https://nownownow.com" class="text-orange-500 hover:underline">now page movement</a> — regularly updated to reflect what I'm focused on at this point in my life.
-        </p>
-        <p class="text-sm text-gray-400">Last updated: {lastUpdated}</p>
+    <!-- Divider -->
+    <hr class="border-gray-800 mb-20" />
+
+    <!-- Building -->
+    <section class="mb-20">
+      <div class="mb-10">
+        <p class="text-xs uppercase tracking-[0.25em] text-gray-500 font-mono mb-3">01 / Building</p>
+        <h2 class="text-3xl font-bold accent-underline">Where my hours go</h2>
+      </div>
+
+      <div class="grid gap-6 sm:gap-8">
+        {buildingNow.map((item, idx) => (
+          <article class="group relative bg-[#1e242a] border border-gray-800 rounded-xl p-6 sm:p-8 hover:border-orange-500/40 transition-colors">
+            <div class="flex items-baseline justify-between mb-2 flex-wrap gap-2">
+              <h3 class="text-2xl font-bold">{item.name}</h3>
+              <span class="text-xs uppercase tracking-wider text-orange-500 font-mono">{item.role}</span>
+            </div>
+            <p class="text-gray-300 leading-relaxed mb-5">{item.blurb}</p>
+            <div class="flex flex-wrap gap-2">
+              {item.tags.map((tag) => (
+                <span class="text-xs px-2.5 py-1 rounded-full bg-gray-800/60 text-gray-400 border border-gray-700">{tag}</span>
+              ))}
+            </div>
+            <span class="absolute top-6 right-6 text-xs font-mono text-gray-600 hidden sm:block">0{idx + 1}</span>
+          </article>
+        ))}
       </div>
     </section>
 
-  </div>
+    <!-- Recent MOHARA work -->
+    <section class="mb-20">
+      <div class="mb-10">
+        <p class="text-xs uppercase tracking-[0.25em] text-gray-500 font-mono mb-3">02 / Recently shipped</p>
+        <h2 class="text-3xl font-bold accent-underline">From the MOHARA bench</h2>
+      </div>
+
+      <div class="grid sm:grid-cols-2 gap-px bg-gray-800 border border-gray-800 rounded-xl overflow-hidden">
+        {recentMOHARA.map((item) => (
+          <div class="bg-background p-6 sm:p-7 hover:bg-[#1e242a] transition-colors">
+            <h3 class="font-bold text-lg mb-2 flex items-center gap-2">
+              <span class="w-1.5 h-1.5 rounded-full bg-orange-500"></span>
+              {item.name}
+            </h3>
+            <p class="text-gray-400 text-sm leading-relaxed">{item.summary}</p>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <!-- Exploring -->
+    <section class="mb-20">
+      <div class="mb-10">
+        <p class="text-xs uppercase tracking-[0.25em] text-gray-500 font-mono mb-3">03 / Exploring</p>
+        <h2 class="text-3xl font-bold accent-underline">Side investigations</h2>
+      </div>
+
+      <div class="space-y-6">
+        {exploring.map((item) => (
+          <div class="flex flex-col sm:flex-row gap-4 sm:gap-8 sm:items-baseline border-l-2 border-orange-500/40 pl-6 py-2">
+            <h3 class="text-xl font-bold min-w-[140px]">{item.name}</h3>
+            <p class="text-gray-300 leading-relaxed">{item.blurb}</p>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <!-- Learning -->
+    <section class="mb-20">
+      <div class="mb-10">
+        <p class="text-xs uppercase tracking-[0.25em] text-gray-500 font-mono mb-3">04 / Learning</p>
+        <h2 class="text-3xl font-bold accent-underline">Sharpening</h2>
+      </div>
+
+      <div class="flex flex-wrap gap-3">
+        {learning.map((topic) => (
+          <span class="px-4 py-2 rounded-lg bg-[#1e242a] border border-gray-800 text-gray-300 text-sm hover:border-orange-500/40 hover:text-white transition-colors">
+            {topic}
+          </span>
+        ))}
+      </div>
+    </section>
+
+    <!-- Outside work -->
+    <section class="mb-20">
+      <div class="mb-10">
+        <p class="text-xs uppercase tracking-[0.25em] text-gray-500 font-mono mb-3">05 / Off the keyboard</p>
+        <h2 class="text-3xl font-bold accent-underline">Outside the screen</h2>
+      </div>
+
+      <blockquote class="text-xl sm:text-2xl text-gray-300 leading-relaxed font-light italic max-w-2xl border-l-4 border-orange-500 pl-6">
+        Learning guitar. Writing notes. Thinking about mindfulness, ethics, and how to build useful products without losing sight of people.
+      </blockquote>
+    </section>
+
+    <!-- Footer -->
+    <footer class="pt-10 border-t border-gray-800">
+      <p class="text-sm text-gray-500 leading-relaxed">
+        Inspired by the <a href="https://nownownow.com" class="text-orange-500 hover:underline">now page movement</a>. Updated whenever the answer to "what are you focused on?" changes meaningfully.
+      </p>
+      <p class="text-xs font-mono text-gray-600 mt-4">
+        Last updated · {lastUpdated}
+      </p>
+    </footer>
+  </main>
 </Layout>

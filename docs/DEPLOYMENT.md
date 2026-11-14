@@ -1,14 +1,14 @@
 # Hosting the garden
 
-The garden is live at https://kundaiclayy.vercel.app, from the Vercel project `kundaiclay`.
+The garden is live at https://kundai-garden.vercel.app, from the Vercel project `kundai-garden` under `kundaiclaytons-projects-5b761d8b`. A nicer address can be added later as a domain on that project.
 
 ## Release workflow
 
 Content is Markdown in `src/content/garden/`, so a build needs no Notion keys or other secrets.
 
-`kundaiclay` is connected to `KundaiClayton/kundai`, with `main` as the production branch. Merging a pull request into `main` builds and publishes the site. Every pull request also gets a preview link in a Vercel comment.
+`kundai-garden` is connected to `KundaiClayton/kundai`, with the Astro preset and `main` as the production branch. Merging a pull request into `main` builds and publishes the site. Every pull request also gets a preview link in a Vercel comment.
 
-The project `kundai-garden` (kundai-garden.vercel.app) hosted an earlier manual upload of the redesign. In November 2026 it was disconnected from GitHub and no longer updates. Delete it when it is no longer needed.
+An older project, `kundaiclay` (kundaiclayy.vercel.app), is also connected to this repo from a different Vercel account. It builds the same site. Disconnect or delete it from that account when it is no longer wanted.
 
 ## Future private routes
 

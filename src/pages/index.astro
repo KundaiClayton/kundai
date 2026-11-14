@@ -1,14 +1,20 @@
 ---
-import ProfileHeader from "../components/ProfileHeader.astro";
-import GardenIntro from "../components/GardenIntro.astro";
-import FeaturedEssays from "../components/FeaturedEssays.astro";
-import RecentNotes from "../components/RecentNotes.astro";
-import Layout from "../layouts/Layout.astro";
+import ProfileHeader from '../components/ProfileHeader.astro';
+import GardenIntro from '../components/GardenIntro.astro';
+import FeaturedEssays from '../components/FeaturedEssays.astro';
+import RecentNotes from '../components/RecentNotes.astro';
+import Layout from '../layouts/Layout.astro';
 ---
-
-<Layout title="Digital Garden">
-  <ProfileHeader />
-  <GardenIntro />
-  <FeaturedEssays />
-  <RecentNotes />
+<Layout title="Kundai — A digital garden">
+  <main>
+    <div class="home-opening grid lg:grid-cols-[1.1fr_1fr] gap-12 lg:gap-16 items-start">
+      <ProfileHeader />
+      <FeaturedEssays />
+    </div>
+    <GardenIntro />
+    <RecentNotes />
+  </main>
 </Layout>
+<style>
+  .home-opening { padding-block: var(--space-section); }
+</style>

@@ -1,6 +1,6 @@
 # PRD 0001: Migrate from Notion CMS to Astro Content Collections + MDX
 
-- **Status:** Proposed
+- **Status:** Done (November 2026), as one `garden` collection with a `type` field instead of five collections. Rendering still uses `BlogContent` (react-markdown); MDX and components are later work.
 - **Author:** Kundai Clayton
 - **Created:** 2026-05-22
 - **Target:** Phase 2 (after initial "make it mine" content pass)

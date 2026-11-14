@@ -1,0 +1,43 @@
+:root {
+  color-scheme: dark;
+  --color-canvas: #141e24;
+  --color-surface: #19262d;
+  --color-text: #eee5d5;
+  --color-muted: #a9b1b1;
+  --color-border: #3b4548;
+  --color-blue: #1856d8;
+  --color-link: #91afff;
+  --color-clay: #d8896e;
+  --color-focus: #b7caff;
+  --color-growing: #a9c5a0;
+  --font-display: 'Cormorant Garamond', Georgia, serif;
+  --font-body: 'Inter', system-ui, sans-serif;
+  --font-meta: 'JetBrains Mono', ui-monospace, monospace;
+  --space-section: clamp(3.5rem, 7vw, 6rem);
+  --measure-reading: 66ch;
+  --measure-site: 76rem;
+  --radius: 0.25rem;
+  --shadow-card: 0 16px 40px rgb(0 0 0 / 0.08);
+  --motion-duration: 180ms;
+  /* Compatibility with existing routes while they adopt semantic utilities. */
+  --foreground-rgb: 238, 229, 213;
+  --background-rgb: 20, 30, 36;
+  --accent-color: 216, 137, 110;
+}
+
+/* Warm-paper light theme. Dark remains the default until a preference is saved. */
+:root[data-theme='light'] {
+  color-scheme: light;
+  --color-canvas: #f2ecdf;
+  --color-surface: #eae3d5;
+  --color-text: #242c2d;
+  --color-muted: #59615f;
+  --color-border: #c3b9a9;
+  --color-link: #174bb4;
+  --color-clay: #944830;
+  --color-focus: #174bb4;
+  --color-growing: #446442;
+  --foreground-rgb: 36, 44, 45;
+  --background-rgb: 242, 236, 223;
+  --accent-color: 148, 72, 48;
+}

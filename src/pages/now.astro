@@ -1,122 +1,186 @@
 ---
-import { Image } from 'astro:assets';
 import Layout from '../layouts/Layout.astro';
 
-const mediaContent = {
-  book: {
-    title: "Four Thousand Weeks: Time Management for Mortals",
-    author: "Oliver Burkeman",
-    coverImage: "https://picsum.photos/80/120",
-    type: "Now reading"
-  },
-  music: {
-    title: "Pastoral",
-    artist: "Ludwig van Beethoven / London Symphony Orchestra",
-    subtitle: "Symphony No. 6",
-    coverImage: "https://picsum.photos/80/80",
-    type: "Now playing"
-  },
-  show: {
-    title: "Severance",
-    platform: "Apple TV+",
-    subtitle: "Season 1",
-    coverImage: "https://picsum.photos/120/80",
-    type: "Now watching"
-  }
-};
+const lastUpdated = "May 23, 2026";
 
-const lastUpdated = "June 15, 2023";
+const buildingNow = [
+  {
+    name: "MOHARA",
+    role: "Full-stack mobile engineer",
+    blurb: "React Native and full-stack TypeScript across technical solution design, backend integration, CI/CD, and production app delivery.",
+    tags: ["React Native", "TypeScript", "Expo", "Supabase", "tRPC"],
+  },
+  {
+    name: "AgriData Technologies",
+    role: "Co-founder",
+    blurb: "Agricultural intelligence for institutions in Zimbabwe. WhatsApp-based pest and disease reporting with real-time dashboards, maps, severity tracking, and alerts.",
+    tags: ["Pilot", "Zimbabwe", "WhatsApp", "Dashboards"],
+  },
+  {
+    name: "BOQ Generator",
+    role: "Builder",
+    blurb: "Turning project requirements into structured bills of quantities — practical business tooling that removes manual admin work.",
+    tags: ["Workflow automation", "Internal tooling"],
+  },
+];
+
+const recentMOHARA = [
+  {
+    name: "Mindfull",
+    summary: "Custom iOS and Android health & wellness app replacing a previous white-label product.",
+  },
+  {
+    name: "Louvelle",
+    summary: "Led frontend architecture for a high-fashion peer-to-peer rental iOS MVP.",
+  },
+  {
+    name: "Taos Ski Valley",
+    summary: "Rewrote a high-traffic Drupal site into a Next.js + Strapi platform.",
+  },
+  {
+    name: "Uply",
+    summary: "Recruitment platform on Next.js, tRPC, PostgreSQL, Prisma.",
+  },
+];
+
+const exploring = [
+  {
+    name: "Voessa",
+    blurb: "AI voice coaching for communication — recording, transcription, filler/cadence analysis.",
+  },
+  {
+    name: "Quest",
+    blurb: "Gamifying personal growth, hobbies, and goals into a playful life path.",
+  },
+];
+
+const learning = [
+  "React Native architecture",
+  "Full-stack TypeScript",
+  "Database design",
+  "AI-assisted development",
+  "Technical leadership",
+  "Product strategy",
+];
 ---
 
-<Layout title="Now | Kundai Clayton">
-  <div class="space-y-10">
-    <section>
-      <h1 class="text-3xl font-bold mb-2">Now</h1>
-      <p class="text-gray-300">What I'm currently doing, reading, listening to, and watching.</p>
+<Layout title="Now | Kundai Chatambudza">
+  <main class="max-w-4xl mx-auto py-12 sm:py-20">
+    <!-- Hero -->
+    <section class="mb-20">
+      <p class="text-xs uppercase tracking-[0.25em] text-clay font-mono mb-6">
+        Updated {lastUpdated}
+      </p>
+      <h1 class="text-6xl sm:text-7xl font-bold tracking-tight mb-6">
+        Now<span class="text-clay">.</span>
+      </h1>
+      <p class="text-xl sm:text-2xl text-subtle leading-relaxed max-w-2xl">
+        Working across mobile apps, AI-assisted development, and early-stage product building.
+      </p>
     </section>
 
-    <section class="bg-[#1e242a] rounded-lg p-6">
-      <h2 class="text-xl font-bold mb-4">Currently</h2>
-      <div class="space-y-6 text-gray-300">
-        <p>
-          I'm currently working as a senior designer at a tech company, focusing on creating design systems and
-          component-level interfaces.
-        </p>
-        <p>
-          In my free time, I'm learning more about digital gardens and personal knowledge management systems. I'm also
-          experimenting with generative AI digital tools for art and WebGL.
-        </p>
-        <p>
-          This "now" page was inspired by the{" "}
-          <a href="https://nownownow.com" class="text-orange-500 hover:underline">
-            now page movement
-          </a>
-          . It's regularly updated to reflect what I'm focused on at this point in my life.
-        </p>
-        <p class="text-sm text-gray-400">Last updated: {lastUpdated}</p>
+    <!-- Divider -->
+    <hr class="border-line mb-20" />
+
+    <!-- Building -->
+    <section class="mb-20">
+      <div class="mb-10">
+        <p class="text-xs uppercase tracking-[0.25em] text-subtle font-mono mb-3">01 / Building</p>
+        <h2 class="text-3xl font-bold accent-underline">Where my hours go</h2>
+      </div>
+
+      <div class="grid gap-6 sm:gap-8">
+        {buildingNow.map((item, idx) => (
+          <article class="group relative bg-surface border border-line rounded-xl p-6 sm:p-8 hover:border-cobalt transition-colors">
+            <div class="flex items-baseline justify-between mb-2 flex-wrap gap-2">
+              <h3 class="text-2xl font-bold">{item.name}</h3>
+              <span class="text-xs uppercase tracking-wider text-clay font-mono">{item.role}</span>
+            </div>
+            <p class="text-subtle leading-relaxed mb-5">{item.blurb}</p>
+            <div class="flex flex-wrap gap-2">
+              {item.tags.map((tag) => (
+                <span class="text-xs px-2.5 py-1 rounded-full bg-surface text-subtle border border-line">{tag}</span>
+              ))}
+            </div>
+            <span class="absolute top-6 right-6 text-xs font-mono text-subtle hidden sm:block">0{idx + 1}</span>
+          </article>
+        ))}
       </div>
     </section>
 
-    <section>
-      <h2 class="text-xl font-bold mb-4">Reading</h2>
-      <div class="flex items-start gap-4 bg-[#1e242a] rounded-lg p-4">
-        <div class="flex-shrink-0">
-          <Image
-            src={mediaContent.book.coverImage}
-            alt="Book cover"
-            width={80}
-            height={120}
-            class="rounded"
-          />
-        </div>
-        <div>
-          <div class="text-sm text-orange-500 mb-1">{mediaContent.book.type}</div>
-          <h3 class="font-bold mb-1">{mediaContent.book.title}</h3>
-          <p class="text-sm text-gray-400">{mediaContent.book.author}</p>
-        </div>
+    <!-- Recent MOHARA work -->
+    <section class="mb-20">
+      <div class="mb-10">
+        <p class="text-xs uppercase tracking-[0.25em] text-subtle font-mono mb-3">02 / Recently shipped</p>
+        <h2 class="text-3xl font-bold accent-underline">From the MOHARA bench</h2>
+      </div>
+
+      <div class="grid sm:grid-cols-2 gap-px bg-surface border border-line rounded-xl overflow-hidden">
+        {recentMOHARA.map((item) => (
+          <div class="bg-background p-6 sm:p-7 hover:bg-surface transition-colors">
+            <h3 class="font-bold text-lg mb-2 flex items-center gap-2">
+              <span class="w-1.5 h-1.5 rounded-full bg-cobalt"></span>
+              {item.name}
+            </h3>
+            <p class="text-subtle text-sm leading-relaxed">{item.summary}</p>
+          </div>
+        ))}
       </div>
     </section>
 
-    <section>
-      <h2 class="text-xl font-bold mb-4">Listening</h2>
-      <div class="flex items-start gap-4 bg-[#1e242a] rounded-lg p-4">
-        <div class="flex-shrink-0">
-          <Image
-            src={mediaContent.music.coverImage}
-            alt="Album cover"
-            width={80}
-            height={80}
-            class="rounded"
-          />
-        </div>
-        <div>
-          <div class="text-sm text-orange-500 mb-1">{mediaContent.music.type}</div>
-          <h3 class="font-bold mb-1">{mediaContent.music.title}</h3>
-          <p class="text-sm text-gray-400">{mediaContent.music.artist}</p>
-          <p class="text-xs text-gray-500">{mediaContent.music.subtitle}</p>
-        </div>
+    <!-- Exploring -->
+    <section class="mb-20">
+      <div class="mb-10">
+        <p class="text-xs uppercase tracking-[0.25em] text-subtle font-mono mb-3">03 / Exploring</p>
+        <h2 class="text-3xl font-bold accent-underline">Side investigations</h2>
+      </div>
+
+      <div class="space-y-6">
+        {exploring.map((item) => (
+          <div class="flex flex-col sm:flex-row gap-4 sm:gap-8 sm:items-baseline border-l-2 border-clay pl-6 py-2">
+            <h3 class="text-xl font-bold min-w-[140px]">{item.name}</h3>
+            <p class="text-subtle leading-relaxed">{item.blurb}</p>
+          </div>
+        ))}
       </div>
     </section>
 
-    <section>
-      <h2 class="text-xl font-bold mb-4">Watching</h2>
-      <div class="flex items-start gap-4 bg-[#1e242a] rounded-lg p-4">
-        <div class="flex-shrink-0">
-          <Image
-            src={mediaContent.show.coverImage}
-            alt="Movie poster"
-            width={120}
-            height={80}
-            class="rounded"
-          />
-        </div>
-        <div>
-          <div class="text-sm text-orange-500 mb-1">{mediaContent.show.type}</div>
-          <h3 class="font-bold mb-1">{mediaContent.show.title}</h3>
-          <p class="text-sm text-gray-400">{mediaContent.show.platform}</p>
-          <p class="text-xs text-gray-500">{mediaContent.show.subtitle}</p>
-        </div>
+    <!-- Learning -->
+    <section class="mb-20">
+      <div class="mb-10">
+        <p class="text-xs uppercase tracking-[0.25em] text-subtle font-mono mb-3">04 / Learning</p>
+        <h2 class="text-3xl font-bold accent-underline">Sharpening</h2>
+      </div>
+
+      <div class="flex flex-wrap gap-3">
+        {learning.map((topic) => (
+          <span class="px-4 py-2 rounded-lg bg-surface border border-line text-subtle text-sm hover:border-cobalt hover:text-ink transition-colors">
+            {topic}
+          </span>
+        ))}
       </div>
     </section>
-  </div>
+
+    <!-- Outside work -->
+    <section class="mb-20">
+      <div class="mb-10">
+        <p class="text-xs uppercase tracking-[0.25em] text-subtle font-mono mb-3">05 / Off the keyboard</p>
+        <h2 class="text-3xl font-bold accent-underline">Outside the screen</h2>
+      </div>
+
+      <blockquote class="text-xl sm:text-2xl text-subtle leading-relaxed font-light italic max-w-2xl border-l-4 border-clay pl-6">
+        Learning guitar. Writing notes. Thinking about mindfulness, ethics, and how to build useful products without losing sight of people.
+      </blockquote>
+    </section>
+
+    <!-- Footer -->
+    <footer class="pt-10 border-t border-line">
+      <p class="text-sm text-subtle leading-relaxed">
+        Inspired by the <a href="https://nownownow.com" class="text-clay hover:underline">now page movement</a>. Updated whenever the answer to "what are you focused on?" changes meaningfully.
+      </p>
+      <p class="text-xs font-mono text-subtle mt-4">
+        Last updated · {lastUpdated}
+      </p>
+    </footer>
+  </main>
 </Layout>

@@ -1,34 +1,33 @@
 ---
 import Logo from './Logo.astro';
-
+import BotanicalSprig from './BotanicalSprig.astro';
+import ThemeToggle from './ThemeToggle.astro';
 const navItems = [
-  { title: "Garden", url: "/garden" },
-  { title: "Now", url: "/now" },
-  { title: "About", url: "/about" },
+  { title: 'Garden', url: '/garden' },
+  { title: 'Archive', url: '/blog' },
+  { title: 'Now', url: '/now' },
+  { title: 'About', url: '/about' },
 ];
-
 const pathname = Astro.url.pathname;
-const isActive = (href: string) => 
-  pathname === href || (href !== "/" && pathname?.startsWith(href));
 ---
-
-<header class="border-b border-gray-800">
-  <div class="container mx-auto px-4 md:px-6 lg:px-8 py-4 flex justify-between items-center">
-    <a href="/" class="text-orange-500">
-      <Logo />
-    </a>
-    <nav class="flex space-x-6">
-      {navItems.map(({ title, url }) => (
-        <a
-          href={url}
-          class:list={[
-            "text-sm font-medium transition-colors hover:text-white",
-            isActive(url) ? "text-white" : "text-gray-400"
-          ]}
-        >
-          {title}
-        </a>
-      ))}
-    </nav>
+<header class="site-header site-width">
+  <div class="flex flex-wrap items-center justify-between gap-x-6 gap-y-6">
+    <a href="/" aria-label="Kundai — home"><Logo /></a>
+    <div class="flex flex-wrap items-center gap-x-6 gap-y-2">
+      <nav aria-label="Main navigation" class="flex flex-wrap items-center gap-5 sm:gap-8">
+        {navItems.map(({ title, url }) => (
+          <a href={url} aria-current={pathname === url || pathname.startsWith(`${url}/`) ? 'page' : undefined}>{title}</a>
+        ))}
+      </nav>
+      <ThemeToggle />
+      <div class="hidden sm:block header-sprig"><BotanicalSprig compact /></div>
+    </div>
   </div>
 </header>
+<style>
+  .site-header { padding-block: 2rem 1.65rem; border-bottom: 1px solid var(--color-border); }
+  nav a { font-size: .875rem; padding-block: .5rem; color: var(--color-muted); text-decoration-color: var(--color-blue); text-underline-offset: .6rem; }
+  nav a:hover, nav a[aria-current] { color: var(--color-text); text-decoration-line: underline; }
+  .header-sprig { height: 4.5rem; overflow: hidden; }
+  @media (max-width: 480px) { .site-header { padding-block: 1.5rem; } nav { gap: 1.25rem; } }
+</style>

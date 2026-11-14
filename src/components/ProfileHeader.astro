@@ -1,11 +1,14 @@
----
-// No props or imports needed
----
-
-<section class="py-16 md:py-24">
-    <h1 class="text-4xl md:text-5xl font-bold mb-4">John Doe</h1>
-    <p class="text-lg text-gray-300 max-w-2xl">
-      Designer, developer, and writer exploring the intersection of technology and creativity.
-    </p>
-    <div class="accent-underline"></div>
-  </section>
+<section class="home-intro" aria-labelledby="garden-title">
+  <p class="eyebrow flex items-center gap-3"><span class="seed-dot" aria-hidden="true"></span>A personal digital garden</p>
+  <h1 id="garden-title">A garden of<br />questions, code,<br />and sound<span class="clay-text">.</span></h1>
+  <span class="short-rule" aria-hidden="true"></span>
+  <p class="intro-copy">Notes, experiments and reflections<br class="hidden sm:block" /> on a quieter internet.</p>
+  <a href="/garden" class="garden-link inline-flex items-center gap-5">Wander through the garden <span aria-hidden="true">→</span></a>
+</section>
+<style>
+  .home-intro { padding-block: 1rem; }
+  h1 { font: 400 clamp(3.4rem, 6.3vw, 6rem)/.98 var(--font-display); letter-spacing: -.04em; margin-block: 2.25rem 1.75rem; }
+  .intro-copy { color: var(--color-muted); font-size: 1.05rem; line-height: 1.85; margin-block: 1.3rem 2rem; }
+  .seed-dot { width: .45rem; height: .45rem; border-radius: 50%; background: var(--color-blue); }
+  .short-rule { display: block; height: 1px; width: 2rem; background: var(--color-clay); }
+</style>

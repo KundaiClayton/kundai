@@ -1,125 +1,59 @@
 ---
-import { Image } from 'astro:assets';
-import Tag from './Tag.astro';
-import { getFeaturedContent } from '../lib/notion';
-
-// Define the Essay type based on your Notion data structure
-interface Essay {
-  id: string;
-  title: string;
-  description: string;
-  date: string;
-  coverImage: string;
-  status: string;
-  tags: string[];
-  slug: string;
-  externalLinks?: {
-    title: string;
-    url: string;
-  }[];
-}
-
-// Accept essays as a prop or fetch from Notion if not provided
-interface Props {
-  essays?: Essay[];
-}
-
+import { getFeaturedContent } from '../lib/content';
+import BotanicalSprig from './BotanicalSprig.astro';
+import StoryImage from './StoryImage.astro';
+type Essay = Awaited<ReturnType<typeof getFeaturedContent>>[number];
+interface Props { essays?: Essay[] }
 const { essays: propEssays } = Astro.props;
-
-// Fetch essays from Notion if not provided as props
 let essays: Essay[] = [];
-if (propEssays) {
-  essays = propEssays;
-} else {
-  try {
-    essays = await getFeaturedContent('Essay');
-  } catch (error) {
-    console.error('Error fetching featured essays:', error);
-  }
-}
-
-// Fallback data if no essays are available
-const fallbackEssays: Essay[] = [
-  {
-    id: "design-systems",
-    title: "The Evolution of Design Systems",
-    description:
-      "Exploring how design systems have evolved from simple style guides to complex, living documentation that shapes product development.",
-    date: "May 15, 2023",
-    coverImage: "https://picsum.photos/600/400",
-    status: "complete",
-    tags: ["Design", "Systems", "Documentation"],
-    slug: "design-systems"
-  },
-  {
-    id: "digital-minimalism",
-    title: "Digital Minimalism: Finding Focus in a Noisy World",
-    description:
-      "An exploration of how minimalist principles can be applied to our digital lives to reduce distraction and increase meaning.",
-    date: "April 22, 2023",
-    coverImage: "https://picsum.photos/600/400?random=2",
-    status: "complete",
-    tags: ["Minimalism", "Digital", "Focus"],
-    slug: "digital-minimalism"
-  },
-];
-
-console.log('Essays:', essays);
-
-// Use real essays if available, otherwise fallback
-const displayEssays = essays.length > 0 ? essays : fallbackEssays;
+let unavailable = false;
+try { essays = propEssays ?? await getFeaturedContent('Essay'); }
+catch { unavailable = true; }
+const [featured, ...otherEssays] = essays;
 ---
-
-<section class="mb-16">
-  <div class="mb-6">
-    <h2 class="text-2xl md:text-3xl font-bold mb-2">Featured Essays</h2>
-    <p class="text-gray-400">Longer, more polished pieces on design, technology, and creativity.</p>
-    <div class="accent-underline"></div>
+<section class="featured-section" aria-labelledby="featured-heading">
+  <div class="featured-panel relative overflow-hidden">
+    {!featured?.coverImage && <div class="feature-art" aria-hidden="true"><BotanicalSprig /></div>}
+    {featured?.coverImage && <a href={`/blog/${encodeURIComponent(featured.slug)}`} tabindex="-1" aria-hidden="true" class="feature-cover"><StoryImage src={featured.coverImage} alt="" eager /></a>}
+    <div class="feature-copy relative">
+      <h2 id="featured-heading" class="eyebrow">Selected from the garden</h2>
+      {featured ? (
+        <>
+          <p class="feature-kind">Featured essay</p>
+          <h3><a href={`/blog/${featured.slug}`}>{featured.title}</a></h3>
+          <p class="feature-description">{featured.description}</p>
+          <a class="garden-link inline-flex items-center gap-6" href={`/blog/${featured.slug}`}>Read the essay <span aria-hidden="true">→</span></a>
+        </>
+      ) : (
+        <>
+          <h3>Room to grow.</h3>
+          <p class="feature-description">{unavailable ? 'The essays are taking a moment to load. Try visiting the garden again shortly.' : 'A space for longer thoughts, carefully tended. New essays will appear here as they are published.'}</p>
+          <a href="/garden" class="garden-link">Explore the garden →</a>
+        </>
+      )}
+    </div>
   </div>
-  <div class="space-y-8">
-    {
-      displayEssays.map((essay) => (
-        <article class="grid md:grid-cols-2 gap-6 bg-[#1e242a] rounded-lg overflow-hidden">
-          <div class="relative">
-            <div class="absolute top-4 left-4 z-10">
-              <Tag variant={essay.status === "complete" ? "orange" : "dark"}>
-                {essay.status === "complete" ? "Complete" : "WIP"}
-              </Tag>
-            </div>
-            {essay.coverImage ? (
-              <img
-                src={essay.coverImage}
-                alt={essay.title}
-                width={600}
-                height={400}
-                class="h-full w-full object-cover"
-              />
-            ) : (
-              <div class="h-full w-full bg-gray-800 flex items-center justify-center">
-                <span class="text-gray-500">No image available</span>
-              </div>
-            )}
-          </div>
-          <div class="p-6 flex flex-col">
-            <div class="mb-2 text-sm text-gray-400">{essay.date}</div>
-            <h3 class="text-xl font-bold mb-2">{essay.title}</h3>
-            <p class="text-gray-300 mb-6">{essay.description}</p>
-            <div class="mt-auto flex flex-wrap gap-2 mb-4">
-              {essay.tags.map((tag) => (
-                <Tag variant="dark">
-                  {tag}
-                </Tag>
-              ))}
-            </div>
-            <a 
-              href={`/blog/${essay.slug}`}
-              class="text-accent-orange hover:text-accent-orange/80 font-medium mt-auto inline-block"
-            >
-              Read more →
-            </a>
-          </div>
-        </article>
-      ))
-    }
-  </div>
+  {otherEssays.slice(0, 2).map(essay => (
+    <a href={`/blog/${essay.slug}`} class="other-essay flex items-center justify-between gap-5">
+      <div><span class="eyebrow">Also growing here</span><p>{essay.title}</p></div>
+      <span class="clay-text" aria-hidden="true">↗</span>
+    </a>
+  ))}
 </section>
+<style>
+  .featured-panel { border: 1px solid var(--color-border); border-radius: var(--radius); background: var(--color-surface); min-height: 25rem; box-shadow: var(--shadow-card); }
+  .feature-art { position: absolute; width: 47%; height: 19rem; right: -1.5rem; top: 1.5rem; opacity: .8; }
+  .feature-cover { display: block; overflow: hidden; }
+  .feature-cover :global(img) { aspect-ratio: 16 / 9; object-fit: cover; }
+  .featured-panel:has(.feature-cover) h3, .featured-panel:has(.feature-cover) .feature-description { max-width: 100%; }
+  .featured-panel:has(.feature-cover) .feature-kind { margin-top: 1.5rem; }
+  .feature-copy { padding: 2rem; }
+  .feature-kind { margin-top: 3rem; color: var(--color-clay); font: .65rem var(--font-meta); text-transform: uppercase; letter-spacing: .16em; }
+  h3 { position: relative; max-width: 78%; margin-block: .75rem 1.25rem; font: 400 clamp(2.5rem, 3.5vw, 3.5rem)/1.02 var(--font-display); letter-spacing: -.025em; }
+  h3 a:hover { color: var(--color-clay); }
+  .feature-description { position: relative; max-width: 70%; margin-bottom: 2rem; color: var(--color-muted); font-size: .9rem; line-height: 1.8; }
+  .other-essay { padding-block: 1.3rem; border-bottom: 1px solid var(--color-border); }
+  .other-essay p { font: 400 1.5rem/1.2 var(--font-display); margin-top: .5rem; }
+  .other-essay:hover p { color: var(--color-link); }
+  @media (max-width: 480px) { .feature-copy { padding: 1.5rem; } .feature-description { max-width: 80%; } .feature-art { right: -2.8rem; opacity: .5; } }
+</style>

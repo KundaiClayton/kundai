@@ -1,7 +1,7 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import GardenEntry from '../components/GardenEntry.astro';
-import { getAllPublished } from '../lib/notion';
+import { getAllPublished } from '../lib/content';
 
 const entries = await getAllPublished();
 const types = [...new Set(entries.map(entry => entry.contentType))].sort();

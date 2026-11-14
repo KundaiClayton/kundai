@@ -1,41 +1,49 @@
 # Writing stories and adding images
 
-Keep writing in the existing Notion content database. The Astro garden reads the same deliberately published entries as the other blog; you do not need to copy articles between the sites.
+Every garden entry is a Markdown file in `src/content/garden/`. The site no longer reads Notion. You can still draft in Notion, but a post goes live only once its file is in this repo.
 
 ## A new entry
 
-1. Create a page in the database and write in its body.
-2. Give it a name, description, date and a unique slug. Keep existing slugs unchanged so existing article links continue to work.
-3. Choose a `Content Type`: Essay, Note or Article (for technical writing). Other types will also appear in the garden once published.
-4. Choose tags and a growth status. Growth status describes the writing; it does not grant permission to publish.
-5. Keep `Published` unchecked while working privately. Check it only when the entry and all its images are ready to be public.
-6. Check `Featured` on an Essay to make it eligible for the selected essay on the homepage. The homepage also shows recent Notes; the garden and archive include all published types.
+1. Add `src/content/garden/<name>.md`. The file name becomes the URL (`/blog/<name>`) unless you set `slug`.
+2. Start it with this frontmatter:
 
-## The cover image
+```md
+---
+title: "Read less, listen more"
+description: "One or two sentences for the card and search engines."
+date: 2026-11-14
+type: Essay          # Essay, Note, Article (technical writing), Project, Book Review
+status: wip          # wip shows as Growing, complete shows as Tended
+tags: ["life", "accessibility"]
+featured: false      # true on an Essay puts it forward on the homepage
+published: true      # false keeps it out of the build while you work on it
+cover: "/garden/<name>/cover.png"   # optional
+coverAlt: ""         # optional; leave empty if the cover is decorative
+coverCaption: ""     # optional visible caption or credit
+---
+```
 
-Open the entry's database properties, find **Cover Image**, and upload the image there. Use the first image in that field as the story cover. It appears on the garden card and article header; a featured essay uses it on the homepage too.
+3. Write the body in Markdown below it.
+4. Open a pull request. Merging it publishes the entry.
 
-A landscape image around 1600 pixels wide works well. Cards crop it to 16:9; the article header shows the full image. Keep essential details away from the outer edges if you want them visible in the card crop. JPG, PNG and WebP uploads are good choices. Avoid putting essential words only inside an image.
+Keep existing slugs unchanged so old links keep working. Some older entries keep a `slug` with spaces for that reason.
 
-The Notion page's **Add cover** feature also works as a fallback when no file property supplies a cover. Existing compatibility fields (`Files & media`, `Cover`, `Image`, `Cover Image`, `Featured Image`) are checked in that order, before the page cover. If a different old field is populated, that field takes priority; prefer keeping only the intended cover field populated.
+## Images
 
-Optional database properties can be added as Text fields:
+Put a post's images in `public/garden/<name>/` and link them from the post:
 
-- `Cover Alt`: a concise description when the cover conveys information. Without it, the cover is treated as decorative.
-- `Cover Caption`: an optional visible caption or image credit below the article cover.
+```md
+![What the image shows](/garden/<name>/diagram.png)
+```
 
-No schema changes were made to Notion. These fields are optional and can be added when useful.
+The text in the brackets is the alt text. Leave it empty for purely decorative images. A landscape cover around 1600 pixels wide works well; cards crop it to 16:9 and the article header shows it in full.
 
-## Images inside the story
+## From Notion to the garden
 
-In the Notion page body, type `/image` and upload the image where it belongs. Add a caption that describes the image; the converter uses that caption as its alternative text. If the image is purely decorative, leave the caption blank. Keep explanatory information and credits in an adjacent text block if they should be visible in the article.
-
-Uploading to Notion is the supported path for managed images. At build time, the site turns Notion-hosted covers and inline images into local WebP assets under `/_astro/`, so readers do not depend on Notion's expiring download links. The process uses Astro's Sharp image service. Build failures are surfaced instead of quietly shipping broken image links. Images linked from other external websites remain dependent on those websites.
-
-You don't need to put article images in this Git repository when uploading through Notion. The mockups under `docs/design-references/` are development references only and do not become story images.
+If you drafted in Notion, copy the text into a new file here (or ask an agent to). Download any images from Notion first: Notion's image links expire after an hour, so they can't be linked directly.
 
 ## Seeing updates
 
-The garden is currently a static Astro site. Local development fetches published content when a page is requested; reload after editing Notion. A public deployment receives changes only after a fresh build and deployment. Checking `Published` alone does not trigger an automatic Astro deployment; no Notion webhook has been configured. The current public deployment and manual release workflow are recorded in `docs/DEPLOYMENT.md`.
+Run `pnpm dev` to see changes locally as you save. The public site updates when the change is merged and Vercel rebuilds it. See `docs/DEPLOYMENT.md`.
 
-Light mode is available in the shared navigation. It remembers your choice in this browser and applies to the homepage, garden, archive, articles, About and Now pages. Dark mode is the initial default.
+Light mode is available in the shared navigation. It remembers your choice in this browser. Dark mode is the initial default.

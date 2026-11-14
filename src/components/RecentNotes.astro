@@ -1,5 +1,5 @@
 ---
-import { getRecentContent } from '../lib/notion';
+import { getRecentContent } from '../lib/content';
 import GardenEntry from './GardenEntry.astro';
 type Note = Awaited<ReturnType<typeof getRecentContent>>[number];
 interface Props { notes?: Note[] }

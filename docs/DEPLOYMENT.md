@@ -1,6 +1,6 @@
 # Hosting the garden
 
-The garden is live at https://kundai-garden.vercel.app, from the Vercel project `kundai-garden` under `kundaiclaytons-projects-5b761d8b`. A nicer address can be added later as a domain on that project.
+The garden is live at https://kundaiclayton.vercel.app (also kundai-garden.vercel.app), from the Vercel project `kundai-garden` under `kundaiclaytons-projects-5b761d8b`. In November 2026 the kundaiclayton.vercel.app address was moved here from the old `kundaiclayton` showcase project, which no longer has a public address.
 
 ## Release workflow
 

@@ -12,7 +12,7 @@ The existing `kundaiclayton` portfolio and `notion-blog-site` projects were not 
 
 Content is Markdown in `src/content/garden/`, so a build needs no Notion keys or other secrets.
 
-Planned setup: connect the `kundai-garden` Vercel project to `KundaiClayton/kundai` (Project settings → Git), with `develop` as the production branch. After that, merging a pull request into `develop` builds and publishes the site, and every pull request gets a preview URL.
+Planned setup: connect the `kundai-garden` Vercel project to `KundaiClayton/kundai` (Project settings → Git) with the Astro framework preset and `main` as the production branch. After that, merging a pull request into `main` builds and publishes the site, and every pull request gets a preview URL.
 
 Until that is connected, deploy by hand from a clean checkout:
 

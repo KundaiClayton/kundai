@@ -1,41 +1,24 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import { getAllPublished } from '../lib/notion';
-
 const posts = await getAllPublished();
 ---
-<Layout title="Blog">
-<div class="px-4 space-y-8 sm:space-x-14 sm:px-0">
-  <section class="flex justify-center text-center sm:gap-6 sm:px-48 sm:py-16">
-    <h1 class="font-mono text-xl leading-loose sm:text-3xl text-white/80">
-      Just started getting into writing. Check out some of my pieces
-      below. Nothing serious, just some random thoughts I have... enjoy.
-    </h1>
-  </section>
-
-  <main class="px-4 space-y-8 sm:space-y-0 sm:px-16">
-    {
-      posts ? (
-        posts.map((post) => (
-          <section
-            class="sm:px-24 sm:py-14 border-t-[0.1px] border-slate-400 hover:animate-pulse"
-          >
-            <a href={`/blog/${post.slug}`} class="flex flex-col gap-4">
-              <div>
-                <h2 class="text-lg sm:text-2xl text-white/80">{post.title}</h2>
-              </div>
-              <div class="text-xs font-bold sm:text-sm text-white/40">
-                {post.date}
-              </div>
-              <p class="text-sm font-thin text-gray-200 sm:text-base">
-                {post.description}
-              </p>
-            </a>
-          </section>
-        ))
-      ) : (
-        <h1>No posts</h1>
-      )
-    }
+<Layout title="Archive | Kundai Clayton">
+  <main class="archive-page max-w-4xl mx-auto">
+    <header class="mb-12"><p class="eyebrow mb-4">Over time</p><h1 class="section-title mb-5">The archive</h1><p class="text-subtle leading-relaxed">Every published entry, from the newest growth to the earlier seeds.</p></header>
+    <div class="archive-list">
+      {posts.map(post => (
+        <article class="py-7 border-t border-line">
+          <div class="flex flex-wrap items-center gap-4 mb-3"><span class="eyebrow">{post.contentType}</span><p class="eyebrow">{post.date}</p></div>
+          <h2><a href={`/blog/${encodeURIComponent(post.slug)}`}>{post.title}</a></h2>
+          <p class="text-subtle text-sm leading-relaxed mt-3 line-clamp-3">{post.description}</p>
+        </article>
+      ))}
+    </div>
   </main>
-</div></Layout>
+</Layout>
+<style>
+  .archive-page { padding-block: var(--space-section); }
+  h2 { font: 400 clamp(1.8rem, 3vw, 2.5rem)/1.15 var(--font-display); }
+  h2 a:hover { color: var(--color-link); }
+</style>

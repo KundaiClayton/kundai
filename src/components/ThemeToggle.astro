@@ -1,0 +1,43 @@
+<button type="button" role="switch" aria-checked="false" aria-label="Light mode" data-theme-toggle class="theme-toggle">
+  <span class="theme-track" aria-hidden="true"><span></span></span>
+  <span>Light mode</span>
+</button>
+<script>
+  import type { TransitionBeforeSwapEvent } from 'astro:transitions';
+  const key = 'garden-theme';
+  const currentTheme = () => document.documentElement.dataset.theme === 'light' ? 'light' : 'dark';
+  function syncToggle() {
+    document.querySelectorAll('[data-theme-toggle]').forEach(button => {
+      button.setAttribute('aria-checked', String(currentTheme() === 'light'));
+    });
+  }
+  function applyTheme(theme: string) {
+    document.documentElement.dataset.theme = theme;
+    document.documentElement.classList.toggle('dark', theme === 'dark');
+    syncToggle();
+  }
+  document.addEventListener('click', event => {
+    if (!(event.target instanceof Element) || !event.target.closest('[data-theme-toggle]')) return;
+    const theme = currentTheme() === 'dark' ? 'light' : 'dark';
+    applyTheme(theme);
+    try { localStorage.setItem(key, theme); } catch { /* Works for this visit without storage. */ }
+  });
+  document.addEventListener('astro:before-swap', (event: TransitionBeforeSwapEvent) => {
+    const theme = currentTheme();
+    event.newDocument.documentElement.dataset.theme = theme;
+    event.newDocument.documentElement.classList.toggle('dark', theme === 'dark');
+  });
+  document.addEventListener('astro:page-load', syncToggle);
+  window.addEventListener('storage', event => {
+    if (event.key === key) applyTheme(event.newValue === 'light' ? 'light' : 'dark');
+  });
+  syncToggle();
+</script>
+<style>
+  .theme-toggle { display: inline-flex; align-items: center; gap: .55rem; min-height: 2.75rem; color: var(--color-muted); font-size: .7rem; white-space: nowrap; }
+  .theme-toggle:hover { color: var(--color-text); }
+  .theme-track { display: inline-flex; align-items: center; width: 1.9rem; height: 1.1rem; border: 1px solid var(--color-border); border-radius: 1rem; padding: .15rem; }
+  .theme-track > span { width: .65rem; height: .65rem; background: var(--color-muted); border-radius: 50%; transition: transform var(--motion-duration); }
+  [aria-checked='true'] .theme-track { border-color: var(--color-blue); }
+  [aria-checked='true'] .theme-track > span { background: var(--color-blue); transform: translateX(.7rem); }
+</style>

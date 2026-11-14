@@ -1,233 +1,101 @@
 ---
-import { Image } from 'astro:assets';
 import Layout from '../layouts/Layout.astro';
-import Tag from '../components/Tag.astro';
-import GardenIntro from '../components/GardenIntro.astro';
-import { getContentByType, getAllTags, getContentByTag } from '../lib/notion';
+import GardenEntry from '../components/GardenEntry.astro';
+import { getAllPublished } from '../lib/notion';
 
-// Define type interfaces based on the metadata structure from Notion
-type ContentItem = {
-  id: string;
-  title: string;
-  description: string;
-  date: string;
-  slug: string;
-  coverImage?: string;
-  contentType: string;
-  featured: boolean;
-  status: string;
-  tags: string[];
-  externalLinks?: { title: string, url: string }[];
-}
-
-// Get the selected filters from URL search params
-const { searchParams } = Astro.url;
-const selectedType = searchParams.get('type') || 'all';
-const selectedStatus = searchParams.get('status') || 'all';
-const selectedTag = searchParams.get('tag') || 'all';
-
-// Fetch data based on filters
-let essays: ContentItem[] = [];
-let notes: ContentItem[] = [];
-let allContent: ContentItem[] = [];
-let filteredContent: ContentItem[] = [];
-let allTags: string[] = ['All'];
-
-try {
-  // Fetch all tags
-  const tagsList = await getAllTags();
-  allTags = ['All', ...tagsList];
-  
-  // Get all essays and notes
-  essays = await getContentByType('Essay');
-  notes = await getContentByType('Note');
-  allContent = [...essays, ...notes];
-  
-  // Apply filters
-  if (selectedType !== 'all' && selectedTag !== 'all' && selectedStatus !== 'all') {
-    // Filter by type, tag, and status
-    const typeContent = selectedType === 'essay' ? essays : selectedType === 'note' ? notes : allContent;
-    const tagContent = await getContentByTag(selectedTag);
-    filteredContent = typeContent.filter(item => 
-      tagContent.some(tc => tc.id === item.id) && 
-      (selectedStatus === 'all' || item.status.toLowerCase() === selectedStatus)
-    );
-  } else if (selectedType !== 'all' && selectedTag !== 'all') {
-    // Filter by type and tag
-    const typeContent = selectedType === 'essay' ? essays : selectedType === 'note' ? notes : allContent;
-    const tagContent = await getContentByTag(selectedTag);
-    filteredContent = typeContent.filter(item => tagContent.some(tc => tc.id === item.id));
-  } else if (selectedType !== 'all' && selectedStatus !== 'all') {
-    // Filter by type and status
-    const typeContent = selectedType === 'essay' ? essays : selectedType === 'note' ? notes : allContent;
-    filteredContent = typeContent.filter(item => item.status.toLowerCase() === selectedStatus);
-  } else if (selectedTag !== 'all' && selectedStatus !== 'all') {
-    // Filter by tag and status
-    const tagContent = await getContentByTag(selectedTag);
-    filteredContent = tagContent.filter(item => item.status.toLowerCase() === selectedStatus);
-  } else if (selectedType !== 'all') {
-    // Filter by type only
-    filteredContent = selectedType === 'essay' ? essays : selectedType === 'note' ? notes : allContent;
-  } else if (selectedTag !== 'all') {
-    // Filter by tag only
-    filteredContent = await getContentByTag(selectedTag);
-  } else if (selectedStatus !== 'all') {
-    // Filter by status only
-    filteredContent = allContent.filter(item => item.status.toLowerCase() === selectedStatus);
-  } else {
-    // No filters, show all
-    filteredContent = allContent;
-  }
-} catch (error) {
-  console.error("Error fetching content:", error);
-}
-
-// Separate filtered content by type for display
-const filteredEssays = filteredContent.filter(item => item.contentType === 'Essay');
-const filteredNotes = filteredContent.filter(item => item.contentType === 'Note');
+const entries = await getAllPublished();
+const types = [...new Set(entries.map(entry => entry.contentType))].sort();
+const tags = [...new Set(entries.flatMap(entry => entry.tags))].sort();
+const statuses = [...new Set(entries.map(entry => entry.status))].sort();
+const statusLabels: Record<string, string> = { complete: 'Tended', wip: 'Growing', draft: 'Seedling' };
+const statusLabel = (status: string) => statusLabels[status] || status;
 ---
-
-<Layout title="Garden | Kundai Clayton">
-  <div class="space-y-10">
-    <section>
-      <h1 class="text-3xl font-bold mb-2">The Garden</h1>
-      <p class="text-gray-300">A collection of essays, notes, and thoughts that grow and evolve over time.</p>
-    </section>
-
-    <section>
-      <div class="flex border-b border-gray-800 mb-4">
-        <a href={`?type=all&status=${selectedStatus}&tag=${selectedTag}`} 
-           class={`px-4 py-2 ${selectedType === 'all' ? 'text-white border-b-2 border-orange-500 font-medium' : 'text-gray-400 hover:text-white'}`}>
-          All
-        </a>
-        <a href={`?type=essay&status=${selectedStatus}&tag=${selectedTag}`}
-           class={`px-4 py-2 ${selectedType === 'essay' ? 'text-white border-b-2 border-orange-500 font-medium' : 'text-gray-400 hover:text-white'}`}>
-          Essays
-        </a>
-        <a href={`?type=note&status=${selectedStatus}&tag=${selectedTag}`}
-           class={`px-4 py-2 ${selectedType === 'note' ? 'text-white border-b-2 border-orange-500 font-medium' : 'text-gray-400 hover:text-white'}`}>
-          Notes
-        </a>
-      </div>
-
-      <div class="flex flex-wrap gap-2 mb-4">
-        <a href={`?type=${selectedType}&status=all&tag=${selectedTag}`}
-           class={`px-3 py-1 text-sm ${selectedStatus === 'all' ? 'bg-gray-800 text-white' : 'text-gray-400 hover:text-white'} rounded-md`}>
-          All Statuses
-        </a>
-        <a href={`?type=${selectedType}&status=draft&tag=${selectedTag}`}
-           class={`px-3 py-1 text-sm ${selectedStatus === 'draft' ? 'bg-gray-800 text-white' : 'text-gray-400 hover:text-white'} rounded-md`}>
-          Drafts
-        </a>
-        <a href={`?type=${selectedType}&status=wip&tag=${selectedTag}`}
-           class={`px-3 py-1 text-sm ${selectedStatus === 'wip' ? 'bg-gray-800 text-white' : 'text-gray-400 hover:text-white'} rounded-md`}>
-          Work In Progress
-        </a>
-        <a href={`?type=${selectedType}&status=complete&tag=${selectedTag}`}
-           class={`px-3 py-1 text-sm ${selectedStatus === 'complete' ? 'bg-gray-800 text-white' : 'text-gray-400 hover:text-white'} rounded-md`}>
-          Complete
-        </a>
-      </div>
-
-      <div class="mb-6">
-        <h3 class="text-sm font-medium mb-2">Filter by Tag:</h3>
-        <div class="flex flex-wrap gap-2">
-          {allTags.map((tag) => (
-            <a
-              href={`?type=${selectedType}&status=${selectedStatus}&tag=${tag === 'All' ? 'all' : tag}`}
-              class={`px-2 py-1 text-xs rounded-md ${(tag === 'All' && selectedTag === 'all') || tag === selectedTag ? 'bg-gray-700 text-white' : 'bg-gray-800 text-gray-400 hover:text-white'}`}
-            >
-              {tag}
-            </a>
-          ))}
+<Layout title="The garden | Kundai Clayton">
+  <main class="garden-page" data-garden>
+    <header class="mb-10">
+      <p class="eyebrow mb-4">Follow a thread</p>
+      <h1 class="section-title mb-5">The garden</h1>
+      <p class="text-subtle leading-relaxed max-w-2xl">Essays, technical explorations and smaller thoughts. A collection that grows and changes over time.</p>
+    </header>
+    <form class="garden-filters flex flex-wrap items-end gap-5" aria-label="Filter the garden" action="/garden" method="get">
+      <label>Kind of entry
+        <select name="type"><option value="all">All entries</option>{types.map(type => <option value={type.toLowerCase()}>{type === 'Article' ? 'Articles / tech' : `${type}s`}</option>)}</select>
+      </label>
+      <label>Growth
+        <select name="status"><option value="all">All stages</option>{statuses.map(status => <option value={status}>{statusLabel(status)}</option>)}</select>
+      </label>
+      <label>Topic
+        <select name="tag"><option value="all">All topics</option>{tags.map(tag => <option value={tag}>{tag}</option>)}</select>
+      </label>
+      <button type="submit" class="garden-link filter-submit">Apply filters</button>
+      <a href="/garden" data-clear-filters class="garden-link">Clear filters</a>
+    </form>
+    <p class="eyebrow my-7" data-result-count aria-live="polite" aria-atomic="true">{entries.length} entries</p>
+    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6" data-garden-entries>
+      {entries.map(entry => (
+        <div class="entry-wrapper" data-entry data-type={entry.contentType.toLowerCase()} data-status={entry.status} data-tags={JSON.stringify(entry.tags)}>
+          <GardenEntry entry={entry} headingLevel="h2" />
         </div>
-      </div>
-    </section>
-
-    {(selectedType === 'all' || selectedType === 'essay') && filteredEssays.length > 0 && (
-      <section>
-        <h2 class="text-2xl font-bold mb-6">Essays</h2>
-        <div class="grid md:grid-cols-2 gap-6">
-          {filteredEssays.map((essay) => (
-            <article class="bg-[#1e242a] rounded-lg overflow-hidden">
-              <div class="relative">
-                <div class="absolute top-4 left-4 z-10">
-                  <Tag variant={essay.status.toLowerCase() === "complete" ? "orange" : "dark"}>
-                    {essay.status}
-                  </Tag>
-                </div>
-                {essay.coverImage ? (
-                  <img
-                    src={essay.coverImage}
-                    alt={essay.title}
-                    width={500}
-                    height={300}
-                    class="w-full h-48 object-cover"
-                  />
-                ) : (
-                  <div class="w-full h-48 bg-gray-800 flex items-center justify-center">
-                    <span class="text-gray-400">No cover image</span>
-                  </div>
-                )}
-              </div>
-              <div class="p-5">
-                <div class="text-sm text-gray-400 mb-1">{essay.date}</div>
-                <h3 class="text-lg font-bold mb-2">
-                  <a href={`/blog/${essay.slug}`} class="hover:text-orange-500">{essay.title}</a>
-                </h3>
-                <p class="text-gray-300 text-sm mb-4">{essay.description}</p>
-                <div class="flex flex-wrap gap-2">
-                  {essay.tags.map((tag) => (
-                    <a href={`?type=${selectedType}&status=${selectedStatus}&tag=${tag}`}>
-                      <Tag variant="dark">
-                        {tag}
-                      </Tag>
-                    </a>
-                  ))}
-                </div>
-              </div>
-            </article>
-          ))}
-        </div>
-      </section>
-    )}
-
-    {(selectedType === 'all' || selectedType === 'note') && filteredNotes.length > 0 && (
-      <section>
-        <h2 class="text-2xl font-bold mb-6">Notes</h2>
-        <div class="grid md:grid-cols-3 gap-6">
-          {filteredNotes.map((note) => (
-            <article class="bg-[#1e242a] rounded-lg p-5">
-              <div class="flex justify-between items-start mb-3">
-                <div class="text-sm text-gray-400">{note.date}</div>
-                <Tag variant={note.status.toLowerCase() === "complete" ? "orange" : "dark"}>
-                  {note.status}
-                </Tag>
-              </div>
-              <h3 class="text-lg font-bold mb-2">
-                <a href={`/blog/${note.slug}`} class="hover:text-orange-500">{note.title}</a>
-              </h3>
-              <p class="text-gray-300 text-sm mb-4">{note.description}</p>
-              <div class="flex flex-wrap gap-2">
-                {note.tags.map((tag) => (
-                  <a href={`?type=${selectedType}&status=${selectedStatus}&tag=${tag}`}>
-                    <Tag variant="dark">
-                      {tag}
-                    </Tag>
-                  </a>
-                ))}
-              </div>
-            </article>
-          ))}
-        </div>
-      </section>
-    )}
-
-    {filteredContent.length === 0 && (
-      <div class="py-10 text-center">
-        <p class="text-gray-400">No content matches your selected filters.</p>
-        <a href="/garden" class="text-orange-500 hover:underline mt-2 inline-block">Clear filters</a>
-      </div>
-    )}
-  </div>
+      ))}
+    </div>
+    <p class="empty-state" data-no-results hidden>No entries match these filters. <a href="/garden" data-clear-filters class="garden-link">Clear filters</a></p>
+    <noscript><p class="text-subtle mt-6">All published entries are shown. Enable JavaScript to filter the collection.</p></noscript>
+  </main>
 </Layout>
+<script>
+  function setupGarden() {
+    const garden = document.querySelector<HTMLElement>('[data-garden]');
+    if (!garden || garden.dataset.ready) return;
+    garden.dataset.ready = 'true';
+    const form = garden.querySelector<HTMLFormElement>('form')!;
+    const entries = [...garden.querySelectorAll<HTMLElement>('[data-entry]')];
+    const controls = ['type', 'status', 'tag'].map(name => form.elements.namedItem(name) as HTMLSelectElement);
+    function filterFromUrl() {
+      const params = new URLSearchParams(location.search);
+      controls.forEach(control => {
+        const value = params.get(control.name) || 'all';
+        control.value = [...control.options].some(option => option.value === value) ? value : 'all';
+      });
+      const [type, status, tag] = controls.map(control => control.value);
+      let count = 0;
+      entries.forEach(entry => {
+        const matches = (type === 'all' || entry.dataset.type === type)
+          && (status === 'all' || entry.dataset.status === status)
+          && (tag === 'all' || JSON.parse(entry.dataset.tags || '[]').includes(tag));
+        entry.hidden = !matches;
+        if (matches) count++;
+      });
+      garden.querySelector('[data-result-count]')!.textContent = `${count} ${count === 1 ? 'entry' : 'entries'}`;
+      garden.querySelector<HTMLElement>('[data-no-results]')!.hidden = count > 0;
+    }
+    function updateUrl() {
+      const params = new URLSearchParams();
+      controls.forEach(control => params.set(control.name, control.value));
+      history.pushState(null, '', `/garden?${params}`);
+      filterFromUrl();
+    }
+    form.addEventListener('change', updateUrl);
+    form.addEventListener('submit', event => { event.preventDefault(); updateUrl(); });
+    garden.querySelectorAll('[data-clear-filters]').forEach(link => link.addEventListener('click', event => {
+      event.preventDefault(); history.pushState(null, '', '/garden'); filterFromUrl();
+    }));
+    garden.addEventListener('garden:filter', filterFromUrl);
+    filterFromUrl();
+  }
+  document.addEventListener('astro:page-load', setupGarden);
+  window.addEventListener('popstate', () => {
+    const garden = document.querySelector<HTMLElement>('[data-garden]');
+    garden?.dispatchEvent(new Event('garden:filter'));
+  });
+  setupGarden();
+</script>
+<style>
+  .garden-page { padding-block: var(--space-section); }
+  .garden-filters { border-block: 1px solid var(--color-border); padding-block: 1.5rem; }
+  label { display: flex; flex-direction: column; gap: .65rem; color: var(--color-muted); font: .65rem var(--font-meta); }
+  select { max-width: 100%; min-width: 10rem; padding: .75rem 2rem .75rem .75rem; border: 1px solid var(--color-border); border-radius: var(--radius); background: var(--color-surface); color: var(--color-text); font: .8rem var(--font-body); }
+  .filter-submit { padding-block: .75rem; }
+  .entry-wrapper:not([hidden]) { display: flex; }
+  .entry-wrapper :global(.garden-entry) { width: 100%; }
+  @media (max-width: 480px) { label { width: 100%; } }
+</style>

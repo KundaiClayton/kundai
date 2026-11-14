@@ -1,17 +1,5 @@
----
-// Clayy wordmark with a soft glowing orange dot.
----
-
-<div class="group inline-flex items-center gap-2">
-  <span class="font-mono font-semibold text-white text-base tracking-tight transition-colors group-hover:text-orange-500">
-    Clayy
-  </span>
-  <span class="relative inline-flex items-center justify-center w-2 h-2">
-    <span
-      class="absolute inline-flex w-full h-full rounded-full bg-orange-500 opacity-70 animate-ping"
-    ></span>
-    <span
-      class="relative inline-flex w-2 h-2 rounded-full bg-orange-500 shadow-[0_0_8px_rgba(255,102,0,0.9),0_0_16px_rgba(255,102,0,0.5)]"
-    ></span>
-  </span>
-</div>
+<span class="wordmark">Kundai<span class="wordmark-dot" aria-hidden="true"></span></span>
+<style>
+  .wordmark { display: inline-flex; align-items: baseline; gap: .65rem; font: 500 clamp(2.5rem, 5vw, 4.25rem)/1 var(--font-display); letter-spacing: -.045em; color: var(--color-text); }
+  .wordmark-dot { width: .28em; height: .28em; border-radius: 50%; background: var(--color-blue); }
+</style>

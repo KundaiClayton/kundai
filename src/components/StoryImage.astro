@@ -1,0 +1,15 @@
+---
+import { getStoryImage } from '../lib/story-images';
+interface Props { src: string; alt?: string; caption?: string; eager?: boolean; class?: string }
+const { src, alt = '', caption, eager = false, class: className } = Astro.props;
+const image = await getStoryImage(src);
+---
+<figure class:list={['story-image', className]}>
+  <img src={image.src} width={image.width} height={image.height} alt={alt} loading={eager ? 'eager' : 'lazy'} decoding="async" />
+  {caption && <figcaption>{caption}</figcaption>}
+</figure>
+<style>
+  .story-image { overflow: hidden; }
+  img { width: 100%; height: auto; display: block; }
+  figcaption { margin-top: .75rem; color: var(--color-muted); font-size: .75rem; line-height: 1.7; }
+</style>

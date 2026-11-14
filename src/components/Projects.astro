@@ -30,42 +30,28 @@ const { projects } = Astro.props;
 // Fallback data in case no projects are provided
 const fallbackProjects: Project[] = [
   {
-    id: "personal-website",
-    title: "Personal Website & Digital Garden",
+    id: "agridata-technologies",
+    title: "AgriData Technologies",
     description:
-      "A custom-built website using Astro and Tailwind CSS, utilizing Notion as a CMS for content management.",
-    date: "April 10, 2024",
-    coverImage: "/images/project-website.png",
-    status: "complete",
-    tags: ["Astro", "Tailwind CSS", "Notion API"],
-    slug: "personal-website",
-    externalLinks: [
-      {
-        title: "GitHub Repository",
-        url: "https://github.com/username/personal-website"
-      },
-      {
-        title: "Live Demo",
-        url: "https://yourdomain.com"
-      }
-    ]
+      "WhatsApp-based pest surveillance and agricultural intelligence platform for institutions in Zimbabwe. Co-founder and product/technical lead.",
+    date: "2025–Present",
+    coverImage: "",
+    status: "wip",
+    tags: ["Next.js", "TypeScript", "Tailwind CSS", "WhatsApp", "PostgreSQL"],
+    slug: "agridata-technologies",
+    externalLinks: []
   },
   {
-    id: "task-management-app",
-    title: "Task Management Application",
+    id: "mindfull-mobile-app",
+    title: "Mindfull Mobile App",
     description:
-      "A React-based task management application with drag-and-drop functionality and local storage.",
-    date: "February 15, 2024",
-    coverImage: "/images/project-tasks.png",
-    status: "wip",
-    tags: ["React", "TypeScript", "CSS"],
-    slug: "task-management-app",
-    externalLinks: [
-      {
-        title: "GitHub Repository",
-        url: "https://github.com/username/task-app"
-      }
-    ]
+      "Health and wellness mobile app rebuilt from a white-label setup into a custom iOS and Android product. Full-stack / React Native developer at MOHARA.",
+    date: "2025–2026",
+    coverImage: "",
+    status: "complete",
+    tags: ["React Native", "Expo", "TypeScript", "Supabase", "tRPC", "Node.js"],
+    slug: "mindfull-mobile-app",
+    externalLinks: []
   }
 ];
 
@@ -76,7 +62,7 @@ const displayProjects = projects?.length > 0 ? projects : fallbackProjects;
 <section class="mb-16">
   <div class="mb-6">
     <h2 class="text-2xl md:text-3xl font-bold mb-2">Projects</h2>
-    <p class="text-gray-400">My recent software development and design projects.</p>
+    <p class="text-gray-400">A mix of professional work and founder/product projects.</p>
     <div class="accent-underline"></div>
   </div>
   <div class="grid md:grid-cols-2 gap-8">

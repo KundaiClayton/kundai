@@ -112,106 +112,106 @@ const principles = [
   <main class="max-w-4xl mx-auto py-12 sm:py-20">
     <!-- Hero -->
     <section class="mb-20">
-      <p class="text-xs uppercase tracking-[0.25em] text-orange-500 font-mono mb-6">
+      <p class="text-xs uppercase tracking-[0.25em] text-clay font-mono mb-6">
         Kundai Clayton Chatambudza
       </p>
       <h1 class="text-6xl sm:text-7xl font-bold tracking-tight mb-8">
-        About<span class="text-orange-500">.</span>
+        About<span class="text-clay">.</span>
       </h1>
-      <p class="text-xl sm:text-2xl text-gray-300 leading-relaxed max-w-2xl">
+      <p class="text-xl sm:text-2xl text-subtle leading-relaxed max-w-2xl">
         Full-stack mobile engineer building thoughtful, AI-assisted products for real-world workflows — from Cape Town and Harare.
       </p>
     </section>
 
-    <hr class="border-gray-800 mb-20" />
+    <hr class="border-line mb-20" />
 
     <!-- Intro with monogram -->
     <section class="mb-20 grid md:grid-cols-3 gap-10">
       <div class="md:col-span-1">
         <!-- Stylised monogram avatar (replace with real photo when ready) -->
-        <div class="aspect-square w-40 sm:w-full max-w-[200px] rounded-2xl bg-gradient-to-br from-orange-500/20 via-orange-500/5 to-transparent border border-orange-500/30 flex items-center justify-center mb-6">
-          <span class="text-5xl font-bold tracking-tight text-orange-500/80">KC</span>
+        <div class="aspect-square w-40 sm:w-full max-w-[200px] rounded-2xl bg-gradient-to-br from-surface via-canvas to-transparent border border-clay flex items-center justify-center mb-6">
+          <span class="text-5xl font-bold tracking-tight text-clay">KC</span>
         </div>
-        <p class="text-xs font-mono text-gray-500 leading-relaxed">
+        <p class="text-xs font-mono text-subtle leading-relaxed">
           Currently
           <br />
-          <span class="text-gray-300">MOHARA · AgriData</span>
+          <span class="text-subtle">MOHARA · AgriData</span>
         </p>
-        <p class="text-xs font-mono text-gray-500 leading-relaxed mt-3">
+        <p class="text-xs font-mono text-subtle leading-relaxed mt-3">
           Based in
           <br />
-          <span class="text-gray-300">Cape Town / Harare</span>
+          <span class="text-subtle">Cape Town / Harare</span>
         </p>
       </div>
 
-      <div class="md:col-span-2 space-y-5 text-gray-300 leading-relaxed text-lg">
+      <div class="md:col-span-2 space-y-5 text-subtle leading-relaxed text-lg">
         <p>
-          I'm a full-stack mobile engineer with a background in computer science and applied statistics. Most of my work sits at the intersection of <strong class="text-white">React Native</strong>, <strong class="text-white">TypeScript</strong>, and the messy reality of getting software into people's hands.
+          I'm a full-stack mobile engineer with a background in computer science and applied statistics. Most of my work sits at the intersection of <strong class="text-ink">React Native</strong>, <strong class="text-ink">TypeScript</strong>, and the messy reality of getting software into people's hands.
         </p>
         <p>
-          At <strong class="text-white">MOHARA</strong> I ship mobile and full-stack products from technical solution design through to release — Mindfull, Louvelle, Taos Ski Valley, Uply. I also help teams use AI coding tools more deliberately, with stronger practices around planning, code generation, and design-to-code.
+          At <strong class="text-ink">MOHARA</strong> I ship mobile and full-stack products from technical solution design through to release — Mindfull, Louvelle, Taos Ski Valley, Uply. I also help teams use AI coding tools more deliberately, with stronger practices around planning, code generation, and design-to-code.
         </p>
         <p>
-          Outside MOHARA I co-founded <strong class="text-white">AgriData Technologies</strong>, building pest surveillance for agricultural institutions in Zimbabwe. I'm also building <strong class="text-white">Voessa</strong>, an AI voice coach, and exploring <strong class="text-white">Quest</strong>, a gamified personal-growth app.
+          Outside MOHARA I co-founded <strong class="text-ink">AgriData Technologies</strong>, building pest surveillance for agricultural institutions in Zimbabwe. I'm also building <strong class="text-ink">Voessa</strong>, an AI voice coach, and exploring <strong class="text-ink">Quest</strong>, a gamified personal-growth app.
         </p>
         <p>
           My work is driven by a single question:
         </p>
-        <blockquote class="border-l-4 border-orange-500 pl-6 py-1 text-xl italic font-light text-gray-200">
+        <blockquote class="border-l-4 border-clay pl-6 py-1 text-xl italic font-light text-ink">
           How can software help people act with more clarity, care, and agency in the real world?
         </blockquote>
       </div>
     </section>
 
-    <hr class="border-gray-800 mb-20" />
+    <hr class="border-line mb-20" />
 
     <!-- Principles -->
     <section class="mb-20">
       <div class="mb-10">
-        <p class="text-xs uppercase tracking-[0.25em] text-gray-500 font-mono mb-3">01 / Operating principles</p>
+        <p class="text-xs uppercase tracking-[0.25em] text-subtle font-mono mb-3">01 / Operating principles</p>
         <h2 class="text-3xl font-bold accent-underline">How I think about the work</h2>
       </div>
 
       <div class="grid sm:grid-cols-2 gap-6">
         {principles.map((p, idx) => (
-          <article class="bg-[#1e242a] border border-gray-800 rounded-xl p-6 sm:p-7 hover:border-orange-500/40 transition-colors relative">
-            <span class="text-xs font-mono text-gray-600 block mb-3">0{idx + 1}</span>
+          <article class="bg-surface border border-line rounded-xl p-6 sm:p-7 hover:border-cobalt transition-colors relative">
+            <span class="text-xs font-mono text-subtle block mb-3">0{idx + 1}</span>
             <h3 class="text-lg font-bold mb-2">{p.title}</h3>
-            <p class="text-gray-400 text-sm leading-relaxed">{p.body}</p>
+            <p class="text-subtle text-sm leading-relaxed">{p.body}</p>
           </article>
         ))}
       </div>
     </section>
 
-    <hr class="border-gray-800 mb-20" />
+    <hr class="border-line mb-20" />
 
     <!-- Projects -->
     <section class="mb-20">
       <div class="mb-10">
-        <p class="text-xs uppercase tracking-[0.25em] text-gray-500 font-mono mb-3">02 / Selected work</p>
+        <p class="text-xs uppercase tracking-[0.25em] text-subtle font-mono mb-3">02 / Selected work</p>
         <h2 class="text-3xl font-bold accent-underline">Projects</h2>
       </div>
 
-      <div class="divide-y divide-gray-800 border-y border-gray-800">
+      <div class="divide-y divide-gray-800 border-y border-line">
         {projects.map((project, idx) => (
           <article class="py-10 first:pt-8 last:pb-8 group">
             <div class="flex items-baseline gap-4 mb-3 flex-wrap">
-              <span class="text-xs font-mono text-gray-600">0{idx + 1}</span>
+              <span class="text-xs font-mono text-subtle">0{idx + 1}</span>
               <h3 class="text-2xl sm:text-3xl font-bold">{project.title}</h3>
-              <span class="text-xs font-mono text-gray-500 ml-auto">{project.period}</span>
+              <span class="text-xs font-mono text-subtle ml-auto">{project.period}</span>
             </div>
-            <p class="text-xs uppercase tracking-wider text-orange-500 font-mono mb-4 pl-8">
+            <p class="text-xs uppercase tracking-wider text-clay font-mono mb-4 pl-8">
               {project.role}
             </p>
-            <p class="text-gray-300 leading-relaxed mb-5 pl-8 max-w-3xl">
+            <p class="text-subtle leading-relaxed mb-5 pl-8 max-w-3xl">
               {project.description}
             </p>
             <div class="flex flex-wrap gap-2 pl-8 mb-4">
               {project.tags.map((tag) => (
-                <span class="text-xs px-2.5 py-1 rounded-full bg-gray-800/60 text-gray-400 border border-gray-700">{tag}</span>
+                <span class="text-xs px-2.5 py-1 rounded-full bg-surface text-subtle border border-line">{tag}</span>
               ))}
             </div>
-            <a href={project.link} class="inline-flex items-center gap-2 pl-8 text-sm text-orange-500 hover:underline font-mono">
+            <a href={project.link} class="inline-flex items-center gap-2 pl-8 text-sm text-clay hover:underline font-mono">
               {project.linkLabel}
               <span aria-hidden="true">→</span>
             </a>
@@ -220,22 +220,22 @@ const principles = [
       </div>
     </section>
 
-    <hr class="border-gray-800 mb-20" />
+    <hr class="border-line mb-20" />
 
     <!-- Stack -->
     <section class="mb-20">
       <div class="mb-10">
-        <p class="text-xs uppercase tracking-[0.25em] text-gray-500 font-mono mb-3">03 / Toolkit</p>
+        <p class="text-xs uppercase tracking-[0.25em] text-subtle font-mono mb-3">03 / Toolkit</p>
         <h2 class="text-3xl font-bold accent-underline">Stack</h2>
       </div>
 
       <div class="space-y-8">
         {stackGroups.map((group) => (
           <div class="grid sm:grid-cols-[140px_1fr] gap-4 sm:gap-8 items-start">
-            <h3 class="text-xs uppercase tracking-[0.2em] font-mono text-gray-500 pt-2">{group.label}</h3>
+            <h3 class="text-xs uppercase tracking-[0.2em] font-mono text-subtle pt-2">{group.label}</h3>
             <div class="flex flex-wrap gap-2">
               {group.items.map((item) => (
-                <span class="px-3 py-1.5 rounded-lg bg-[#1e242a] border border-gray-800 text-gray-300 text-sm hover:border-orange-500/40 hover:text-white transition-colors">
+                <span class="px-3 py-1.5 rounded-lg bg-surface border border-line text-subtle text-sm hover:border-cobalt hover:text-ink transition-colors">
                   {item}
                 </span>
               ))}
@@ -245,32 +245,32 @@ const principles = [
       </div>
     </section>
 
-    <hr class="border-gray-800 mb-20" />
+    <hr class="border-line mb-20" />
 
     <!-- Connect -->
     <section class="mb-20">
       <div class="mb-10">
-        <p class="text-xs uppercase tracking-[0.25em] text-gray-500 font-mono mb-3">04 / Get in touch</p>
+        <p class="text-xs uppercase tracking-[0.25em] text-subtle font-mono mb-3">04 / Get in touch</p>
         <h2 class="text-3xl font-bold accent-underline">Connect</h2>
       </div>
 
-      <div class="grid sm:grid-cols-2 gap-px bg-gray-800 border border-gray-800 rounded-xl overflow-hidden">
+      <div class="grid sm:grid-cols-2 gap-px bg-surface border border-line rounded-xl overflow-hidden">
         {socialLinks.map(({ platform, description, url, handle }) => (
-          <a href={url} class="bg-background p-6 sm:p-7 hover:bg-[#1e242a] transition-colors group block">
+          <a href={url} class="bg-background p-6 sm:p-7 hover:bg-surface transition-colors group block">
             <div class="flex items-baseline justify-between mb-2">
               <h3 class="font-bold text-lg">{platform}</h3>
-              <span class="text-orange-500 opacity-0 group-hover:opacity-100 transition-opacity" aria-hidden="true">→</span>
+              <span class="text-clay opacity-0 group-hover:opacity-100 transition-opacity" aria-hidden="true">→</span>
             </div>
-            <p class="text-gray-400 text-sm mb-3 leading-relaxed">{description}</p>
-            <p class="text-xs font-mono text-orange-500/80">{handle}</p>
+            <p class="text-subtle text-sm mb-3 leading-relaxed">{description}</p>
+            <p class="text-xs font-mono text-clay">{handle}</p>
           </a>
         ))}
       </div>
     </section>
 
     <!-- Closing -->
-    <footer class="pt-10 border-t border-gray-800">
-      <p class="text-base sm:text-lg text-gray-400 leading-relaxed italic max-w-2xl">
+    <footer class="pt-10 border-t border-line">
+      <p class="text-base sm:text-lg text-subtle leading-relaxed italic max-w-2xl">
         When I'm not coding I'm usually learning guitar, writing notes, or thinking about mindfulness, ethics, and the shape software gives our days.
       </p>
     </footer>

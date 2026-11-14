@@ -1,93 +1,59 @@
 ---
 import { getFeaturedContent } from '../lib/notion';
-
-interface Essay {
-  id: string;
-  title: string;
-  description: string;
-  date: string;
-  coverImage: string;
-  status: string;
-  tags: string[];
-  slug: string;
-  externalLinks?: {
-    title: string;
-    url: string;
-  }[];
-}
-
-interface Props {
-  essays?: Essay[];
-}
-
+import BotanicalSprig from './BotanicalSprig.astro';
+import StoryImage from './StoryImage.astro';
+type Essay = Awaited<ReturnType<typeof getFeaturedContent>>[number];
+interface Props { essays?: Essay[] }
 const { essays: propEssays } = Astro.props;
-
 let essays: Essay[] = [];
-if (propEssays) {
-  essays = propEssays;
-} else {
-  try {
-    essays = await getFeaturedContent('Essay');
-  } catch (error) {
-    console.error('Error fetching featured essays:', error);
-  }
-}
+let unavailable = false;
+try { essays = propEssays ?? await getFeaturedContent('Essay'); }
+catch { unavailable = true; }
+const [featured, ...otherEssays] = essays;
 ---
-
-<section class="max-w-4xl mx-auto mb-20">
-  <hr class="border-gray-800 mb-20" />
-
-  <div class="mb-10 flex items-end justify-between flex-wrap gap-4">
-    <div>
-      <p class="text-xs uppercase tracking-[0.25em] text-gray-500 font-mono mb-3">02 / Featured essays</p>
-      <h2 class="text-3xl sm:text-4xl font-bold accent-underline">Longer reads</h2>
+<section class="featured-section" aria-labelledby="featured-heading">
+  <div class="featured-panel relative overflow-hidden">
+    {!featured?.coverImage && <div class="feature-art" aria-hidden="true"><BotanicalSprig /></div>}
+    {featured?.coverImage && <a href={`/blog/${encodeURIComponent(featured.slug)}`} tabindex="-1" aria-hidden="true" class="feature-cover"><StoryImage src={featured.coverImage} alt="" eager /></a>}
+    <div class="feature-copy relative">
+      <h2 id="featured-heading" class="eyebrow">Selected from the garden</h2>
+      {featured ? (
+        <>
+          <p class="feature-kind">Featured essay</p>
+          <h3><a href={`/blog/${featured.slug}`}>{featured.title}</a></h3>
+          <p class="feature-description">{featured.description}</p>
+          <a class="garden-link inline-flex items-center gap-6" href={`/blog/${featured.slug}`}>Read the essay <span aria-hidden="true">→</span></a>
+        </>
+      ) : (
+        <>
+          <h3>Room to grow.</h3>
+          <p class="feature-description">{unavailable ? 'The essays are taking a moment to load. Try visiting the garden again shortly.' : 'A space for longer thoughts, carefully tended. New essays will appear here as they are published.'}</p>
+          <a href="/garden" class="garden-link">Explore the garden →</a>
+        </>
+      )}
     </div>
-    <a
-      href="/garden?type=essay"
-      class="text-sm font-mono text-orange-500 hover:underline"
-    >
-      All essays →
-    </a>
   </div>
-
-  {essays.length === 0 ? (
-    <div class="border border-dashed border-gray-800 rounded-xl p-10 text-center">
-      <p class="text-gray-500 italic">
-        No featured essays yet — the garden is still being seeded.
-      </p>
-    </div>
-  ) : (
-    <div class="divide-y divide-gray-800 border-y border-gray-800">
-      {essays.map((essay, idx) => (
-        <a
-          href={`/blog/${essay.slug}`}
-          class="block py-8 first:pt-8 last:pb-8 group"
-        >
-          <div class="flex items-baseline gap-4 mb-3 flex-wrap">
-            <span class="text-xs font-mono text-gray-600">0{idx + 1}</span>
-            <span class="text-xs uppercase tracking-wider font-mono text-orange-500">
-              {essay.status === "complete" ? "Complete" : "WIP"}
-            </span>
-            <span class="text-xs font-mono text-gray-500 ml-auto">{essay.date}</span>
-          </div>
-          <h3 class="text-2xl sm:text-3xl font-bold mb-3 group-hover:text-orange-500 transition-colors pl-8">
-            {essay.title}
-          </h3>
-          <p class="text-gray-300 leading-relaxed mb-4 pl-8 max-w-3xl">
-            {essay.description}
-          </p>
-          <div class="flex items-center gap-3 pl-8 flex-wrap">
-            <div class="flex flex-wrap gap-2">
-              {essay.tags.map((tag) => (
-                <span class="text-xs px-2.5 py-1 rounded-full bg-gray-800/60 text-gray-400 border border-gray-700">{tag}</span>
-              ))}
-            </div>
-            <span class="text-sm font-mono text-orange-500 ml-auto group-hover:translate-x-1 transition-transform">
-              Read →
-            </span>
-          </div>
-        </a>
-      ))}
-    </div>
-  )}
+  {otherEssays.slice(0, 2).map(essay => (
+    <a href={`/blog/${essay.slug}`} class="other-essay flex items-center justify-between gap-5">
+      <div><span class="eyebrow">Also growing here</span><p>{essay.title}</p></div>
+      <span class="clay-text" aria-hidden="true">↗</span>
+    </a>
+  ))}
 </section>
+<style>
+  .featured-panel { border: 1px solid var(--color-border); border-radius: var(--radius); background: var(--color-surface); min-height: 25rem; box-shadow: var(--shadow-card); }
+  .feature-art { position: absolute; width: 47%; height: 19rem; right: -1.5rem; top: 1.5rem; opacity: .8; }
+  .feature-cover { display: block; overflow: hidden; }
+  .feature-cover :global(img) { aspect-ratio: 16 / 9; object-fit: cover; }
+  .featured-panel:has(.feature-cover) h3, .featured-panel:has(.feature-cover) .feature-description { max-width: 100%; }
+  .featured-panel:has(.feature-cover) .feature-kind { margin-top: 1.5rem; }
+  .feature-copy { padding: 2rem; }
+  .feature-kind { margin-top: 3rem; color: var(--color-clay); font: .65rem var(--font-meta); text-transform: uppercase; letter-spacing: .16em; }
+  h3 { position: relative; max-width: 78%; margin-block: .75rem 1.25rem; font: 400 clamp(2.5rem, 3.5vw, 3.5rem)/1.02 var(--font-display); letter-spacing: -.025em; }
+  h3 a:hover { color: var(--color-clay); }
+  .feature-description { position: relative; max-width: 70%; margin-bottom: 2rem; color: var(--color-muted); font-size: .9rem; line-height: 1.8; }
+  .other-essay { padding-block: 1.3rem; border-bottom: 1px solid var(--color-border); }
+  .other-essay p { font: 400 1.5rem/1.2 var(--font-display); margin-top: .5rem; }
+  .other-essay:hover p { color: var(--color-link); }
+  @media (max-width: 480px) { .feature-copy { padding: 1.5rem; } .feature-description { max-width: 80%; } .feature-art { right: -2.8rem; opacity: .5; } }
+</style>

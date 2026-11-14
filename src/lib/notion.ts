@@ -1,5 +1,6 @@
 import { Client } from "@notionhq/client";
 import { NotionToMarkdown } from "notion-to-md";
+import { getStoryImage } from "./story-images";
 
 const NOTION_API_KEY = import.meta.env.NOTION_API_KEY;
 const NOTION_DATABASE_ID = import.meta.env.NOTION_DATABASE_ID;
@@ -16,29 +17,46 @@ const notion = new Client({
   auth: NOTION_API_KEY,
 });
 
-const n2m = new NotionToMarkdown({ notionClient: notion });
+const n2m = new NotionToMarkdown({ notionClient: notion, config: { parseChildPages: false } });
+// Publication is chosen per database entry, never inferred for nested pages.
+n2m.setCustomTransformer('child_page', async () => '');
+n2m.setCustomTransformer('child_database', async () => '');
+n2m.setCustomTransformer('image', async block => {
+  if (!('image' in block)) return false;
+  const image = block.image;
+  const source = image.type === 'file' ? image.file.url : image.external.url;
+  const local = await getStoryImage(source);
+  const caption = image.caption.map(text => text.plain_text).join('');
+  const alt = caption.replace(/[\\[\]]/g, '\\$&').replace(/\n/g, ' ');
+  return `![${alt}](<${local.src}>)`;
+});
 
 // Get all published content from Notion
 export const getAllPublished = async () => {
   try {
-    console.log("Fetching all published posts...");
-    const posts = await notion.databases.query({
-      database_id: NOTION_DATABASE_ID,
-      filter: {
-        property: "Published",
-        checkbox: {
-          equals: true,
+    const allPosts = [];
+    let cursor: string | undefined;
+    do {
+      const posts = await notion.databases.query({
+        database_id: NOTION_DATABASE_ID,
+        start_cursor: cursor,
+        filter: {
+          property: "Published",
+          checkbox: {
+            equals: true,
+          },
         },
-      },
-      sorts: [
-        {
-          property: "Date",
-          direction: "descending",
-        },
-      ],
-    });
+        sorts: [
+          {
+            property: "Date",
+            direction: "descending",
+          },
+        ],
+      });
 
-    const allPosts = posts.results;
+      allPosts.push(...posts.results);
+      cursor = posts.has_more ? posts.next_cursor ?? undefined : undefined;
+    } while (cursor);
     const processedPosts = allPosts.map((post) => {
       return getPageMetaData(post);
     });
@@ -53,7 +71,6 @@ export const getAllPublished = async () => {
 // Get content by specific type (Essay, Note, Project, etc.)
 export const getContentByType = async (contentType: string) => {
   try {
-    console.log(`Fetching published ${contentType} content...`);
     const response = await notion.databases.query({
       database_id: NOTION_DATABASE_ID,
       filter: {
@@ -91,7 +108,6 @@ export const getContentByType = async (contentType: string) => {
 // Get featured content (for Essays, Projects, etc.)
 export const getFeaturedContent = async (contentType: string) => {
   try {
-    console.log(`Fetching featured ${contentType} content...`);
     const response = await notion.databases.query({
       database_id: NOTION_DATABASE_ID,
       filter: {
@@ -138,7 +154,6 @@ export const getRecentContent = async (
   count: number = 3
 ) => {
   try {
-    console.log(`Fetching recent ${contentType} content...`);
     const response = await notion.databases.query({
       database_id: NOTION_DATABASE_ID,
       filter: {
@@ -177,7 +192,6 @@ export const getRecentContent = async (
 // Get content by tag
 export const getContentByTag = async (tag: string) => {
   try {
-    console.log(`Fetching content with tag: ${tag}...`);
     const response = await notion.databases.query({
       database_id: NOTION_DATABASE_ID,
       filter: {
@@ -219,8 +233,6 @@ export const getRelatedContent = async (
   limit: number = 3
 ) => {
   try {
-    console.log(`Fetching related content for tags: ${tags.join(", ")}...`);
-
     if (tags.length === 0) {
       return [];
     }
@@ -271,24 +283,10 @@ export const getRelatedContent = async (
 // Get a single post by its slug
 export const getSingleBlogPostBySlug = async (slug: string) => {
   try {
-    const response = await notion.databases.query({
-      database_id: NOTION_DATABASE_ID,
-      filter: {
-        property: "Slug",
-        formula: {
-          string: {
-            equals: slug,
-          },
-        },
-      },
-    });
-
-    const page = response.results[0];
-    if (!page) {
-      throw new Error(`No post found with slug: ${slug}`);
-    }
-
-    const metadata = getPageMetaData(page);
+    // Resolve only against deliberately published entries, just like the index.
+    const metadata = (await getAllPublished()).find(post => post.slug === slug);
+    if (!metadata) throw new Error('Published article not found.');
+    const page = { id: metadata.id };
     const mdblocks = await n2m.pageToMarkdown(page.id);
     const mdString = n2m.toMarkdownString(mdblocks);
 
@@ -309,11 +307,6 @@ export const getSingleBlogPostBySlug = async (slug: string) => {
 // Extract metadata from a Notion page
 const getPageMetaData = (post: any) => {
   try {
-    console.log("Getting metadata for post:", post.id);
-
-    // Debug: Log all property names to identify the correct one for cover images
-    console.log("Available properties:", Object.keys(post.properties));
-
     // Function to extract tags from multi-select property
     const getTags = (tags: any[]) => {
       return tags.map((tag) => tag.name);
@@ -337,7 +330,6 @@ const getPageMetaData = (post: any) => {
         post.properties[propName].files.length > 0
       ) {
         const file = post.properties[propName].files[0];
-        console.log(`Found image in property "${propName}":`, file);
         coverImage = file.file ? file.file.url : file.external?.url;
         if (coverImage) break;
       }
@@ -345,7 +337,6 @@ const getPageMetaData = (post: any) => {
 
     // Also check for page cover if it exists
     if (!coverImage && post.cover) {
-      console.log("Found page cover:", post.cover);
       if (post.cover.type === "external") {
         coverImage = post.cover.external.url;
       } else if (post.cover.type === "file") {
@@ -413,7 +404,10 @@ const getPageMetaData = (post: any) => {
         : [],
       description: post.properties.Description?.rich_text[0]?.plain_text || "",
       date: formatDate(post.properties.Date?.date?.start),
-      slug: post.properties.Slug?.rich_text[0]?.plain_text || "",
+      slug: post.properties.Slug?.rich_text?.map((text: any) => text.plain_text).join('')
+        || post.properties.Slug?.formula?.string || '',
+      coverAlt: post.properties['Cover Alt']?.rich_text?.map((text: any) => text.plain_text).join('') || '',
+      coverCaption: post.properties['Cover Caption']?.rich_text?.map((text: any) => text.plain_text).join('') || '',
       coverImage: coverImage,
       contentType: contentType,
       featured: featured,
@@ -421,11 +415,9 @@ const getPageMetaData = (post: any) => {
       externalLinks: externalLinks,
     };
 
-    console.log("Generated metadata with coverImage:", metadata.coverImage);
     return metadata;
   } catch (error) {
     console.error("Error in getPageMetaData:", error);
-    console.error("Post object:", JSON.stringify(post, null, 2));
     throw error;
   }
 };
@@ -458,7 +450,6 @@ function formatDate(datestring?: string) {
 // Get all unique tags from the database
 export const getAllTags = async () => {
   try {
-    console.log("Fetching all tags...");
     const posts = await getAllPublished();
 
     // Extract all tags and remove duplicates
@@ -475,7 +466,6 @@ export const getAllTags = async () => {
 // Search content by query string (searches title and description)
 export const searchContent = async (query: string) => {
   try {
-    console.log(`Searching for content matching: ${query}`);
     // First get all published content (Notion API doesn't have text search)
     const allContent = await getAllPublished();
 

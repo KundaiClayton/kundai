@@ -1,95 +1,38 @@
 ---
 import { getRecentContent } from '../lib/notion';
-
-interface Note {
-  id: string;
-  title: string;
-  description: string;
-  date: string;
-  status: string;
-  tags: string[];
-  slug: string;
-  coverImage: string | null;
-}
-
-interface Props {
-  notes?: Note[];
-}
-
+import GardenEntry from './GardenEntry.astro';
+type Note = Awaited<ReturnType<typeof getRecentContent>>[number];
+interface Props { notes?: Note[] }
 const { notes: propNotes } = Astro.props;
-
 let notes: Note[] = [];
-if (propNotes) {
-  notes = propNotes;
-} else {
-  try {
-    notes = await getRecentContent('Note', 3);
-  } catch (error) {
-    console.error('Error fetching recent notes:', error);
-  }
-}
+let unavailable = false;
+try { notes = propNotes ?? await getRecentContent('Note', 3); }
+catch { unavailable = true; }
 ---
-
-<section class="max-w-4xl mx-auto mb-20">
-  <hr class="border-gray-800 mb-20" />
-
-  <div class="mb-10 flex items-end justify-between flex-wrap gap-4">
-    <div>
-      <p class="text-xs uppercase tracking-[0.25em] text-gray-500 font-mono mb-3">03 / Recent notes</p>
-      <h2 class="text-3xl sm:text-4xl font-bold accent-underline">Shorter thoughts</h2>
-    </div>
-    <a
-      href="/garden?type=note"
-      class="text-sm font-mono text-orange-500 hover:underline"
-    >
-      All notes →
-    </a>
+<section class="recent-section" aria-labelledby="recent-heading">
+  <div class="flex flex-wrap items-end justify-between gap-6 mb-8">
+    <div><p class="eyebrow mb-3">Fresh growth</p><h2 id="recent-heading" class="section-title">Notes from the garden</h2></div>
+    <a href="/garden" class="garden-link">All entries <span aria-hidden="true">↗</span></a>
   </div>
-
-  {notes.length === 0 ? (
-    <div class="border border-dashed border-gray-800 rounded-xl p-10 text-center">
-      <p class="text-gray-500 italic">
-        No notes yet — short thoughts will start landing here soon.
-      </p>
+  {notes.length ? (
+    <div class="grid md:grid-cols-3 gap-5">
+      {notes.map(note => <GardenEntry entry={note} />)}
+      {notes.length === 1 && (
+        <aside class="garden-aside md:col-span-2 flex flex-col justify-center">
+          <p class="eyebrow mb-4">Between the entries</p>
+          <p class="aside-title">A practice, rather<br />than a finished thing.</p>
+          <p class="aside-copy">Follow the threads, stay with a question, or see what I’m working on at the moment.</p>
+          <a class="garden-link" href="/now">What I’m doing now <span aria-hidden="true">→</span></a>
+        </aside>
+      )}
     </div>
   ) : (
-    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-px bg-gray-800 border border-gray-800 rounded-xl overflow-hidden">
-      {notes.map((note) => (
-        <a
-          href={`/blog/${note.slug}`}
-          class="block bg-background p-6 hover:bg-[#1e242a] transition-colors group h-full"
-        >
-          <div class="flex items-center justify-between mb-3">
-            <span class="text-xs font-mono text-gray-500">{note.date}</span>
-            <span class="flex items-center gap-1.5">
-              <span class={`w-1.5 h-1.5 rounded-full ${note.status === "complete" ? "bg-orange-500" : "bg-gray-600"}`}></span>
-              <span class="text-[10px] uppercase tracking-wider font-mono text-gray-500">
-                {note.status === "complete" ? "Complete" : "WIP"}
-              </span>
-            </span>
-          </div>
-          <h3 class="text-lg font-bold mb-3 group-hover:text-orange-500 transition-colors leading-snug">
-            {note.title}
-          </h3>
-          <p class="text-gray-400 text-sm leading-relaxed mb-4 line-clamp-3">
-            {note.description}
-          </p>
-          <div class="flex flex-wrap gap-2 mt-auto">
-            {note.tags.slice(0, 3).map((tag) => (
-              <span class="text-[10px] px-2 py-0.5 rounded-full bg-gray-800/60 text-gray-500 border border-gray-700">{tag}</span>
-            ))}
-          </div>
-        </a>
-      ))}
-    </div>
+    <p class="empty-state">{unavailable ? 'The notes are temporarily unavailable. Please check back shortly.' : 'New notes will appear here as they are published. There is room to grow.'}</p>
   )}
-
-  <div class="mt-12 flex justify-center">
-    <a
-      href="/garden"
-      class="inline-flex items-center gap-2 px-6 py-3 border border-gray-700 rounded-lg text-sm font-medium text-gray-300 hover:border-orange-500/40 hover:text-white transition-colors"
-    >
-      Explore the full garden <span aria-hidden="true">→</span>
-    </a>
-  </div>
 </section>
+<style>
+  .recent-section { padding-block: var(--space-section); }
+  .garden-aside { padding: 2rem clamp(1rem, 5vw, 5rem); }
+  .aside-title { font: 400 clamp(2rem, 3.2vw, 3rem)/1.1 var(--font-display); }
+  .aside-copy { color: var(--color-muted); font-size: .9rem; line-height: 1.8; max-width: 26rem; margin-block: 1rem 1.5rem; }
+</style>

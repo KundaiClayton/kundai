@@ -2,44 +2,38 @@
 import { ClientRouter } from 'astro:transitions';
 import Nav from '../components/Nav.astro';
 import '../styles/global.css';
-
-interface Props {
-	title?: string;
-}
-
-const { title = "Kundai Clayton Chatambudza" } = Astro.props;
+interface Props { title?: string; description?: string }
+const { title = 'Kundai Clayton — Digital garden', description = 'Essays, notes and experiments on software, creativity and a meaningful life. A digital garden by Kundai Clayton Chatambudza.' } = Astro.props;
 ---
 <!doctype html>
-<html lang="en" class="scroll-smooth">
-	<head>
-		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<meta name="generator" content={Astro.generator} />
-
-		<link rel="preconnect" href="https://fonts.googleapis.com" />
-		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-		<link
-			href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap"
-			rel="stylesheet"
-		/>
-
-		<title>{title}</title>
-
-		<ClientRouter/>
-	</head>
-	<body class="bg-background font-sans antialiased">
-		<Nav />
-		<div class="px-4 sm:px-8 lg:px-12">
-			<slot />
-		</div>
-	</body>
+<html lang="en" class="dark" data-theme="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="description" content={description} />
+    <script is:inline>
+      (() => {
+        let theme = 'dark';
+        try { if (localStorage.getItem('garden-theme') === 'light') theme = 'light'; } catch {}
+        document.documentElement.dataset.theme = theme;
+        document.documentElement.classList.toggle('dark', theme === 'dark');
+      })();
+    </script>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+    <title>{title}</title>
+    <ClientRouter />
+  </head>
+  <body class="font-sans antialiased">
+    <a href="#main-content" class="skip-link">Skip to content</a>
+    <Nav />
+    <div id="main-content" tabindex="-1" class="site-width page-content"><slot /></div>
+    <footer class="site-width site-footer flex flex-wrap items-center justify-between gap-5">
+      <div><a href="/about">Kundai Clayton</a><p>A small corner of a quieter internet.</p></div>
+      <a href="/garden" class="garden-link">Keep wandering <span aria-hidden="true">↗</span></a>
+    </footer>
+  </body>
 </html>
-<style is:global>
-	html,
-	body {
-		margin: 0;
-		width: 100%;
-		min-height: 100%;
-	}
-</style>

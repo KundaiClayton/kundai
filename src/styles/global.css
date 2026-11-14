@@ -1,12 +1,9 @@
+@import './tokens.css';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --foreground-rgb: 255, 255, 255;
-  --background-rgb: 26, 31, 36;
-  --accent-color: 255, 102, 0;
-}
 
 @layer base {
   html {
@@ -19,12 +16,12 @@
   body {
     color: rgb(var(--foreground-rgb));
     background: rgb(var(--background-rgb));
-    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    font-family: var(--font-body);
   }
 
   ::selection {
-    background-color: rgb(var(--accent-color));
-    color: white;
+    background-color: var(--color-blue);
+    color: #eee5d5;
   }
 
   h1, h2, h3, h4 {
@@ -90,7 +87,10 @@
 
   /* Mono-eyebrow utility used across pages */
   .eyebrow {
-    @apply text-xs uppercase tracking-[0.25em] font-mono text-gray-500;
+    font: 400 .6rem/1.8 var(--font-meta);
+    text-transform: uppercase;
+    letter-spacing: .18em;
+    color: var(--color-muted);
   }
 }
 
@@ -106,4 +106,65 @@
   .tag-dark {
     @apply bg-gray-800 text-white;
   }
+}
+
+@layer base {
+  html, body { margin: 0; width: 100%; min-height: 100%; }
+  h1, h2, h3, h4 { overflow-wrap: anywhere; }
+  :focus-visible { outline: 2px solid var(--color-focus); outline-offset: 5px; }
+  a { transition: color var(--motion-duration); }
+}
+@layer components {
+  .site-width { width: min(calc(100% - 3rem), var(--measure-site)); margin-inline: auto; }
+  .page-content { min-height: 65vh; }
+  .page-content:focus { outline: none; }
+  .site-footer { padding-block: 2rem 2.5rem; border-top: 1px solid var(--color-border); color: var(--color-muted); font-size: .75rem; }
+  .site-footer p { margin-top: .5rem; font-size: .7rem; }
+  .site-footer a:hover { color: var(--color-text); }
+  .garden-link { font: 400 .65rem/1.8 var(--font-meta); letter-spacing: .1em; text-transform: uppercase; color: var(--color-link); text-underline-offset: .4rem; }
+  .garden-link:hover { text-decoration: underline; }
+  .section-title { font: 400 clamp(2.25rem, 4vw, 3.25rem)/1.1 var(--font-display); letter-spacing: -.025em; }
+  .clay-text { color: var(--color-clay); }
+  .empty-state { padding: 2rem; border: 1px solid var(--color-border); color: var(--color-muted); line-height: 1.8; }
+  .skip-link { position: fixed; left: 1rem; top: -8rem; padding: .75rem 1rem; z-index: 100; background: var(--color-surface); color: var(--color-text); }
+  .skip-link:focus { top: 1rem; }
+}
+@media (min-width: 768px) { .site-width { width: min(calc(100% - 6rem), var(--measure-site)); } }
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+}
+
+@layer components {
+  .article-prose {
+    max-width: var(--measure-reading);
+    margin-inline: auto;
+    --tw-prose-body: var(--color-text);
+    --tw-prose-headings: var(--color-text);
+    --tw-prose-lead: var(--color-muted);
+    --tw-prose-links: var(--color-link);
+    --tw-prose-bold: var(--color-text);
+    --tw-prose-counters: var(--color-muted);
+    --tw-prose-bullets: var(--color-clay);
+    --tw-prose-hr: var(--color-border);
+    --tw-prose-quotes: var(--color-text);
+    --tw-prose-quote-borders: var(--color-clay);
+    --tw-prose-captions: var(--color-muted);
+    --tw-prose-code: var(--color-text);
+    --tw-prose-pre-code: var(--color-text);
+    --tw-prose-pre-bg: var(--color-surface);
+    --tw-prose-th-borders: var(--color-border);
+    --tw-prose-td-borders: var(--color-border);
+    font-size: 1.05rem;
+    line-height: 1.9;
+    overflow-wrap: anywhere;
+  }
+  .article-prose :where(h2, h3, h4) { font-family: var(--font-display); font-weight: 500; line-height: 1.2; }
+  .article-prose h2 { font-size: 2rem; }
+  .article-prose img { border-radius: var(--radius); width: 100%; height: auto; }
+  .article-prose pre { max-width: 100%; overflow-x: auto; }
+  .article-prose code { font-family: var(--font-meta); font-size: .8em; }
+  .article-prose .token.comment, .article-prose .token.prolog { color: var(--color-muted); }
+  .article-prose .token.keyword, .article-prose .token.selector { color: var(--color-clay); }
+  .article-prose .token.string, .article-prose .token.attr-value { color: var(--color-growing); }
+  .article-prose .token.function, .article-prose .token.number { color: var(--color-link); }
 }

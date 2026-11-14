@@ -1,0 +1,20 @@
+---
+interface Props { compact?: boolean }
+const { compact = false } = Astro.props;
+---
+<svg class:list={['botanical-sprig', { compact }]} viewBox="0 0 260 350" fill="none" aria-hidden="true" focusable="false">
+  <circle cx="153" cy="192" r="49" fill="var(--color-blue)" />
+  <g stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M121 288C139 247 133 200 139 163C143 127 166 93 165 47M138 176C116 151 100 121 94 95M137 205C162 185 184 156 190 131M145 142C130 119 129 95 131 75M151 115C173 103 188 85 197 64" />
+    <path d="M130 235C109 227 94 210 91 194C108 198 122 214 130 235ZM136 211C155 212 173 202 183 184C162 185 147 195 136 211ZM130 156C112 152 99 143 96 128C113 130 124 141 130 156ZM152 120C167 119 177 111 180 101C166 102 157 109 152 120Z" />
+    <path d="M95 99L83 79M95 99L99 73M95 99L112 85M131 78L119 57M131 78L133 51M131 78L145 61M165 51L153 30M165 51L169 24M165 51L182 34M195 68L190 48M195 68L207 48M195 68L215 62M189 135L179 116M189 135L196 109M189 135L208 121" />
+    {[ [83,76], [99,70], [114,83], [118,54], [133,48], [147,59], [152,27], [169,21], [184,32], [189,45], [208,45], [218,61], [177,113], [197,106], [211,119] ].map(([cx,cy]) => <ellipse cx={cx} cy={cy} rx="3" ry="4" />)}
+    <g stroke="var(--color-clay)">
+      <path d="M121 288L113 310L94 331M121 288L125 313L141 336M121 288L107 299L84 303L68 314M121 288L142 299L166 302L187 316M121 288L118 322L113 341M107 299L100 315M142 299L150 318M94 331L80 335M125 313L138 319" />
+    </g>
+  </g>
+</svg>
+<style>
+  .botanical-sprig { width: 100%; height: 100%; color: var(--color-text); }
+  .compact { max-height: 5rem; width: 3rem; }
+</style>

@@ -1,49 +1,34 @@
 ---
-// src/pages/blog/[slug].astro
 import { getAllPublished, getSingleBlogPostBySlug } from '../../lib/notion';
 import BlogContent from '../../components/BlogContent';
+import StoryImage from '../../components/StoryImage.astro';
 import Layout from '../../layouts/Layout.astro';
-
 export async function getStaticPaths() {
   const posts = await getAllPublished();
-  return posts.map((post) => ({
-    params: { slug: post.slug },
-    props: { post }
-  }));
+  return posts.map(post => ({ params: { slug: post.slug } }));
 }
-
-const { slug } = Astro.params;
-const postData = await getSingleBlogPostBySlug(slug);
-
-// Debug log
-console.log('Post markdown content:', postData.markdown);
+const postData = await getSingleBlogPostBySlug(Astro.params.slug!);
+const { metadata } = postData;
 ---
-<Layout>
-<div class="container mx-auto px-4 mt-8 pt-8">
-  <main class="max-w-4xl mx-auto py-6">
+<Layout title={`${metadata.title} | Kundai Clayton`} description={metadata.description}>
+  <main class="article-page">
     <article>
-      <div class="text-center mb-12">
-        <h1 class="text-3xl sm:text-4xl font-bold text-white/80 mb-4">
-          {postData.metadata.title}
-        </h1>
-        <time class="text-sm text-white/40 mb-6 block">
-          {postData.metadata.date}
-        </time>
-        <div class="flex flex-wrap gap-2 justify-center">
-          {postData.metadata.tags.map((tag) => (
-            <span class="px-3 py-1 bg-background/50 rounded-full text-sm text-white/60">
-              {tag}
-            </span>
-          ))}
-        </div>
-      </div>
-
-     
-
-      <BlogContent 
-        content={postData.markdown} 
-        client:load
-      />
+      <header class="article-header">
+        <a href="/garden" class="garden-link">← Back to the garden</a>
+        <p class="eyebrow mt-10 mb-4">{metadata.contentType} · {metadata.date}</p>
+        <h1>{metadata.title}</h1>
+        {metadata.description && <p class="article-description">{metadata.description}</p>}
+        <div class="flex flex-wrap gap-3 mt-6">{metadata.tags.map(tag => <a class="garden-link" href={`/garden?${new URLSearchParams({tag})}`}>{tag}</a>)}</div>
+      </header>
+      {metadata.coverImage && <StoryImage class="article-cover" src={metadata.coverImage} alt={metadata.coverAlt} caption={metadata.coverCaption} eager />}
+      <BlogContent content={postData.markdown} />
     </article>
   </main>
-</div></Layout>
+</Layout>
+<style>
+  .article-page { max-width: 56rem; margin-inline: auto; padding-block: var(--space-section); }
+  .article-header { max-width: var(--measure-reading); margin: 0 auto 3rem; }
+  h1 { font: 400 clamp(2.75rem, 5.5vw, 4.75rem)/1.06 var(--font-display); letter-spacing: -.03em; }
+  .article-description { color: var(--color-muted); font-size: 1.05rem; line-height: 1.85; margin-top: 1.5rem; }
+  .article-page :global(.article-cover) { margin-bottom: 3rem; border-radius: var(--radius); }
+</style>

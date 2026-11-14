@@ -5,11 +5,19 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+        sans: ['var(--font-body)'],
+        display: ['var(--font-display)'],
         mono: ['"JetBrains Mono"', 'ui-monospace', 'SFMono-Regular', 'monospace'],
       },
       colors: {
-        background: "#1a1f24", // Taking from Next.js config
+        background: "var(--color-canvas)",
+        canvas: "var(--color-canvas)",
+        surface: "var(--color-surface)",
+        ink: "var(--color-text)",
+        subtle: "var(--color-muted)",
+        line: "var(--color-border)",
+        cobalt: "var(--color-blue)",
+        clay: "var(--color-clay)",
         foreground: {
           DEFAULT: "rgb(var(--foreground-rgb))",
         },

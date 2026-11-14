@@ -1,0 +1,38 @@
+---
+import StoryImage from './StoryImage.astro';
+interface Props {
+  entry: { title: string; slug: string; date: string; description: string; status: string; tags: string[]; contentType?: string; coverImage?: string | null; coverAlt?: string };
+  headingLevel?: 'h2' | 'h3';
+}
+const { entry, headingLevel = 'h3' } = Astro.props;
+const Heading = headingLevel;
+const tended = entry.status === 'complete';
+const href = `/blog/${encodeURIComponent(entry.slug)}`;
+---
+<article class="garden-entry flex flex-col">
+  {entry.coverImage && <a href={href} tabindex="-1" aria-hidden="true" class="entry-cover"><StoryImage src={entry.coverImage} alt="" /></a>}
+  <div class="flex flex-wrap items-center justify-between gap-3 mb-8">
+    <span class="eyebrow">{entry.contentType || 'Note'}</span>
+    <span class:list={['entry-status', { tended }]}><span aria-hidden="true"></span>{tended ? 'Tended' : 'Growing'}</span>
+  </div>
+  <Heading><a href={href}>{entry.title}</a></Heading>
+  <p class="entry-description line-clamp-4">{entry.description}</p>
+  <div class="flex items-end justify-between gap-4 mt-auto pt-6">
+    <p class="entry-date">{entry.date}</p>
+    <a href={href} aria-label={`Read ${entry.title}`} class="entry-arrow">→</a>
+  </div>
+</article>
+<style>
+  .garden-entry { padding: 1.75rem; border: 1px solid var(--color-border); border-radius: var(--radius); background: var(--color-surface); transition: border-color var(--motion-duration); }
+  .garden-entry:hover, .garden-entry:focus-within { border-color: var(--color-link); }
+  .entry-cover { display: block; margin: -1.75rem -1.75rem 1.5rem; overflow: hidden; border-radius: var(--radius) var(--radius) 0 0; }
+  .entry-cover :global(img) { aspect-ratio: 16 / 9; object-fit: cover; }
+  .entry-status { display: inline-flex; align-items: center; gap: .5rem; font: .6rem var(--font-meta); text-transform: uppercase; letter-spacing: .12em; color: var(--color-growing); }
+  .entry-status > span { height: .35rem; width: .35rem; background: currentColor; border-radius: 50%; }
+  .entry-status.tended { color: var(--color-link); }
+  h2, h3 { font: 400 2rem/1.1 var(--font-display); letter-spacing: -.02em; }
+  h2 a:hover, h3 a:hover { color: var(--color-link); }
+  .entry-description { margin-top: 1.25rem; color: var(--color-muted); font-size: .875rem; line-height: 1.8; }
+  .entry-date { color: var(--color-muted); font: .6rem/1.6 var(--font-meta); }
+  .entry-arrow { color: var(--color-link); font-size: 1.6rem; padding-inline: .5rem; }
+</style>

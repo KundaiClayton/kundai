@@ -24,7 +24,7 @@ Written on 23 November 2026, from PR #10 and issue #7. Anyone picking up the let
 **What it's like to use**
 
 1. Kundai writes a letter in private and chooses who it's for.
-2. He presses Share, and that person gets an invitation link.
+2. Kundai presses Share, and that person gets an invitation link.
 3. They prove who they are with an email code, which should be easy for someone who isn't technical.
 4. Every time they open the letter or a photo, the server checks they're allowed to see that letter.
 5. Kundai can take access away or set an expiry date. That stops anyone opening it again, but it can't undo copies or screenshots.

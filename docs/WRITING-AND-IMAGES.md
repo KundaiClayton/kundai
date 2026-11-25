@@ -28,6 +28,10 @@ coverCaption: ""     # optional visible caption or credit
 
 Keep existing slugs unchanged so old links keep working. Some older entries keep a `slug` with spaces for that reason.
 
+## Archived stories
+
+Stories taken off the site live in `src/content/archive/`. The site doesn't read that folder. Move a file back into `src/content/garden/` to publish it again.
+
 ## Images
 
 Put a post's images in `public/garden/<name>/` and link them from the post:

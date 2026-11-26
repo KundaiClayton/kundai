@@ -16,6 +16,7 @@ const statusLabel = (status: string) => statusLabels[status] || status;
       <p class="eyebrow mb-4">Follow a thread</p>
       <h1 class="section-title mb-5">The garden</h1>
       <p class="text-subtle leading-relaxed max-w-2xl">Essays, technical explorations and smaller thoughts. A collection that grows and changes over time.</p>
+      <p class="text-subtle leading-relaxed max-w-2xl mt-3"><strong>Work in progress.</strong> I'm rebuilding the garden, so only one story is up for now.</p>
     </header>
     <form class="garden-filters flex flex-wrap items-end gap-5" aria-label="Filter the garden" action="/garden" method="get">
       <label>Kind of entry
@@ -30,7 +31,7 @@ const statusLabel = (status: string) => statusLabels[status] || status;
       <button type="submit" class="garden-link filter-submit">Apply filters</button>
       <a href="/garden" data-clear-filters class="garden-link">Clear filters</a>
     </form>
-    <p class="eyebrow my-7" data-result-count aria-live="polite" aria-atomic="true">{entries.length} entries</p>
+    <p class="eyebrow my-7" data-result-count aria-live="polite" aria-atomic="true">{entries.length} {entries.length === 1 ? 'entry' : 'entries'}</p>
     <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6" data-garden-entries>
       {entries.map(entry => (
         <div class="entry-wrapper" data-entry data-type={entry.contentType.toLowerCase()} data-status={entry.status} data-tags={JSON.stringify(entry.tags)}>
